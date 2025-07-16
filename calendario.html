@@ -84,15 +84,15 @@
     }
     .slots {
       margin-top: 30px;
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
       gap: 10px;
       justify-content: center;
     }
     .slot-btn {
-      flex: 0 0 calc(16.66% - 10px);
-      min-width: 80px;
-      padding: 10px;
+      width: 100%;
+      min-width: 70px;
+      padding: 10px 0;
       border: none;
       border-radius: var(--radio);
       background: var(--azul);
@@ -101,6 +101,7 @@
       font-size: 15px;
       cursor: pointer;
       text-align: center;
+      transition: background 0.2s;
     }
     .slot-btn[disabled] {
       background: #ccc;
@@ -145,6 +146,7 @@
       text-align: center;
       margin-top: 20px;
       font-weight: bold;
+      font-size: 17px;
     }
     footer {
       background: var(--azul);
@@ -152,6 +154,16 @@
       text-align: center;
       padding: 18px 10px;
       font-size: 14px;
+    }
+    @media (max-width: 750px) {
+      .slots {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 520px) {
+      .slots {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
   </style>
 </head>
@@ -167,217 +179,137 @@
     <div id="spinner">⏳ Guardando cita...</div>
   </main>
   <footer>
-    ©️ 2025 Tiendita BMM
+    ©️ 2025 Tiendita BMM — Uso interno
   </footer>
   <script>
-    const API_URL='https://script.google.com/macros/s/AKfycbxeOThWCAjrjY29HsILNUcrC5GkjFRGnHgnpISETAy6jUbOQZbguTx50GMMUamCXbe-/exec';
-    const MAX_CUPOS=3;
-  
-    let HORAS=[],
-    FESTIVOS=[],
-    reservas= {}
-  
-    ;
-    const cal=document.getElementById('calendar');
-    const slot=document.getElementById('slots');
-    const spinner=document.getElementById('spinner');
-    const user=JSON.parse(localStorage.getItem('registroTiendita') || 'null');
-    let selectedCell=null;
-  
-    if ( !user || !user.nombre) {
+    // CONFIGURACIÓN
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxeOThWCAjrjY29HsILNUcrC5GkjFRGnHgnpISETAy6jUbOQZbguTx50GMMUamCXbe-/exec';
+    const MAX_CUPOS = 3;
+    let HORAS = [], FESTIVOS = [], reservas = {};
+    const cal = document.getElementById('calendar');
+    const slot = document.getElementById('slots');
+    const spinner = document.getElementById('spinner');
+    const user = JSON.parse(localStorage.getItem('registroTiendita') || 'null');
+    let selectedCell = null;
+
+    if (!user || !user.nombre) {
       alert('Debes registrarte primero');
-      location.href='index.html';
+      location.href = 'index.html';
     }
-  
+
+    // JSONP utility
     function jsonp(url) {
-      return new Promise((resolve, reject)=> {
-          const cb='cb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-          const s=document.createElement('script');
-  
-          window[cb]=data=> {
-            delete window[cb]; s.remove(); resolve(data);
-          }
-  
-          ;
-  
-          s.onerror=()=> {
-            delete window[cb]; s.remove(); reject();
-          }
-  
-          ;
-          s.src=url + (url.includes('?') ? '&' : '?') + 'callback=' + cb;
-          document.head.appendChild(s);
-        });
+      return new Promise((resolve, reject) => {
+        const cb = 'cb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+        const s = document.createElement('script');
+        window[cb] = data => { delete window[cb]; s.remove(); resolve(data); };
+        s.onerror = () => { delete window[cb]; s.remove(); reject(); };
+        s.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb;
+        document.head.appendChild(s);
+      });
     }
-  
-    const cleanHour=h=>(h.length > 5 ? (h.match(/\d {
-            2
-          }
-  
-          :\d {
-            2
-          }
-  
-          /) || [''])[0] : h);
-  
-    (async ()=> {
-        try {
-          HORAS=(await jsonp(API_URL + '?action=gethorarios')).map(cleanHour);
-        }
-  
-        catch {}
-  
-        try {
-          FESTIVOS=(await jsonp(API_URL + '?action=getfestivos')).map(s=> s.trim());
-        }
-  
-        catch {}
-  
-        try {
-          const list=await jsonp(API_URL + '?action=getall');
-  
-          reservas= {}
-  
-          ;
-  
-          list.forEach(({
-              Fecha, Hora
-  
-            })=> {
-            (reservas[Fecha] ??= {})[Hora]=(reservas[Fecha]?.[Hora] || 0) + 1;
-          });
-      }
-  
-      catch {}
-  
-      if ( !HORAS.length) HORAS=generarHoras('13:00', '16:50', 10);
+
+    // Limpia HH:mm de strings largos
+    const cleanHour = h => (h.length > 5 ? (h.match(/\d{2}:\d{2}/) || [''])[0] : h);
+
+    // INICIALIZAR
+    (async () => {
+      try { HORAS = (await jsonp(API_URL + '?action=gethorarios')).map(cleanHour); } catch {}
+      try { FESTIVOS = (await jsonp(API_URL + '?action=getfestivos')).map(s => s.trim()); } catch {}
+      try {
+        const list = await jsonp(API_URL + '?action=getall');
+        reservas = {};
+        list.forEach(({ Fecha, Hora }) => {
+          (reservas[Fecha] ??= {})[Hora] = (reservas[Fecha]?.[Hora] || 0) + 1;
+        });
+      } catch {}
+      if (!HORAS.length) HORAS = generarHoras('13:00', '16:50', 10);
       drawCalendar();
     })();
-  
+
+    // CALENDARIO
     function drawCalendar() {
-      cal.innerHTML='';
-  
-      ['Lun',
-      'Mar',
-      'Mié',
-      'Jue',
-      'Vie',
-      'Sáb',
-      'Dom'].forEach(d=> {
-          const h=document.createElement('div');
-          h.className='day-header';
-          h.textContent=d;
-          cal.appendChild(h);
-        });
-  
-      const todayISO=(new Date).toISOString().split('T')[0];
-      const base=new Date();
-      base.setDate(1);
-      const y=base.getFullYear(),
-      m=base.getMonth();
-      const offset=(new Date(y, m, 1).getDay() + 6) % 7;
-      const days=new Date(y, m + 1, 0).getDate();
-  
-      for (let i=0; i < offset; i++) cal.appendChild(disabledCell());
-  
-      for (let d=1; d <=days; d++) {
-        const dt=new Date(y, m, d),
-        iso=dt.toISOString().split('T')[0],
-        wd=dt.getDay();
-        const cell=document.createElement('div');
-        cell.className='day';
-        cell.textContent=d;
-  
-        if (wd===0 || wd===6 || FESTIVOS.includes(iso) || iso < todayISO) {
+      cal.innerHTML = '';
+      ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'].forEach(d => {
+        const h = document.createElement('div');
+        h.className = 'day-header';
+        h.textContent = d;
+        cal.appendChild(h);
+      });
+      const todayISO = (new Date).toISOString().split('T')[0];
+      const base = new Date(); base.setDate(1);
+      const y = base.getFullYear(), m = base.getMonth();
+      const offset = (new Date(y, m, 1).getDay() + 6) % 7;
+      const days = new Date(y, m + 1, 0).getDate();
+      for (let i = 0; i < offset; i++) cal.appendChild(disabledCell());
+      for (let d = 1; d <= days; d++) {
+        const dt = new Date(y, m, d), iso = dt.toISOString().split('T')[0], wd = dt.getDay();
+        const cell = document.createElement('div');
+        cell.className = 'day';
+        cell.textContent = d;
+        if (wd === 0 || wd === 6 || FESTIVOS.includes(iso) || iso < todayISO) {
           cell.classList.add('disabled');
+        } else {
+          const taken = Object.values(reservas[iso] || {}).reduce((a, b) => a + b, 0);
+          const total = HORAS.length * MAX_CUPOS;
+          if (taken >= total) cell.classList.add('full');
+          else if (taken >= total / 2) cell.classList.add('medium');
+          cell.onclick = () => { selectCell(cell); showSlots(iso); };
         }
-  
-        else {
-          const taken=Object.values(reservas[iso] || {}).reduce((a, b)=> a + b, 0);
-          const total=HORAS.length * MAX_CUPOS;
-          if (taken >=total) cell.classList.add('full');
-          else if (taken >=total / 2) cell.classList.add('medium');
-  
-          cell.onclick=()=> {
-            selectCell(cell);
-            showSlots(iso);
-          }
-  
-          ;
-        }
-  
-        if (iso===todayISO) selectCell(cell);
+        if (iso === todayISO) selectCell(cell);
         cal.appendChild(cell);
       }
     }
-  
     function disabledCell() {
-      const d=document.createElement('div');
-      d.className='day disabled';
+      const d = document.createElement('div');
+      d.className = 'day disabled';
       return d;
     }
-  
     function selectCell(c) {
       if (selectedCell) selectedCell.classList.remove('selected');
-      selectedCell=c;
+      selectedCell = c;
       selectedCell.classList.add('selected');
     }
-  
+
+    // HORARIOS EN CUADRÍCULA
     function showSlots(iso) {
-      slot.innerHTML='';
-  
-      const occ=reservas[iso] || {}
-  
-      ;
-  
-      HORAS.forEach(raw=> {
-          const h=cleanHour(raw);
-          const c=occ[h] || 0;
-          const b=document.createElement('button');
-          b.className='slot-btn';
-          b.textContent=h;
-          if (c >=MAX_CUPOS) b.disabled=true;
-          b.onclick=()=> confirmar(iso, h);
-          slot.appendChild(b);
-        });
+      slot.innerHTML = '';
+      const occ = reservas[iso] || {};
+      HORAS.forEach(raw => {
+        const h = cleanHour(raw);
+        const c = occ[h] || 0;
+        const b = document.createElement('button');
+        b.className = 'slot-btn';
+        b.textContent = h;
+        if (c >= MAX_CUPOS) b.disabled = true;
+        b.onclick = () => confirmar(iso, h);
+        slot.appendChild(b);
+      });
     }
-  
+
+    // CONFIRMACIÓN DE RESERVA
     function confirmar(fecha, hora) {
-      const bg=document.createElement('div');
-      bg.className='modal-bg';
-  
-      bg.innerHTML=` <div class="modal"><h3>Confirma tu cita</h3><p><b>Nombre:</b>$ {
-        user.nombre
-      }
-  
-      </p><p><b>Correo:</b>$ {
-        user.correo
-      }
-  
-      </p><p><b>Fecha:</b>$ {
-        fecha
-      }
-  
-      </p><p><b>Hora:</b>$ {
-        hora
-      }
-  
-      </p><button class="confirm">Aceptar</button><button class="cancel">Cancelar</button></div>`;
-      bg.querySelector('.cancel').onclick=()=>bg.remove();
-  
-      bg.querySelector('.confirm').onclick=()=> {
-        bg.remove();
-        save(fecha, hora);
-      }
-  
-      ;
+      const bg = document.createElement('div');
+      bg.className = 'modal-bg';
+      bg.innerHTML = `
+        <div class="modal">
+          <h3>Confirma tu cita</h3>
+          <p><b>Nombre:</b> ${user.nombre}</p>
+          <p><b>Correo:</b> ${user.correo}</p>
+          <p><b>Fecha:</b> ${fecha}</p>
+          <p><b>Hora:</b> ${hora}</p>
+          <button class="confirm">Aceptar</button>
+          <button class="cancel">Cancelar</button>
+        </div>`;
+      bg.querySelector('.cancel').onclick = () => bg.remove();
+      bg.querySelector('.confirm').onclick = () => { bg.remove(); save(fecha, hora); };
       document.body.appendChild(bg);
     }
-  
+
+    // GUARDAR CITA (con spinner)
     function save(fecha, hora) {
-      spinner.style.display='block';
-  
-      const p=new URLSearchParams({
+      spinner.style.display = 'block';
+      const p = new URLSearchParams({
         action: 'save',
         empleado: user.empleado,
         rol: user.rol,
@@ -386,67 +318,40 @@
         correo: user.correo,
         fecha, hora
       });
-  
-    jsonp(API_URL + '?' + p.toString()).then(res=> {
-        spinner.style.display='none';
-  
-        if (res.status==='ok') {
+      jsonp(API_URL + '?' + p.toString()).then(res => {
+        spinner.style.display = 'none';
+        if (res.status === 'ok') {
           alert('Cita registrada con éxito');
-          setTimeout(()=> location.href='index.html', 2500);
-        }
-  
-        else {
+          setTimeout(() => location.href = 'index.html', 2500);
+        } else {
           alert(res.message || 'Error al guardar la cita');
-  
-          jsonp(API_URL + '?action=getall').then(data=> {
-              reservas= {}
-  
-              ;
-  
-              data.forEach(({
-                  Fecha, Hora
-  
-                })=> {
-                (reservas[Fecha] ??= {})[Hora]=(reservas[Fecha]?.[Hora] || 0) + 1;
-              });
+          jsonp(API_URL + '?action=getall').then(data => {
+            reservas = {};
+            data.forEach(({ Fecha, Hora }) => {
+              (reservas[Fecha] ??= {})[Hora] = (reservas[Fecha]?.[Hora] || 0) + 1;
+            });
             drawCalendar();
-            slot.innerHTML='';
+            slot.innerHTML = '';
           });
-      }
-  
-    }).catch(()=> {
-        spinner.style.display='none';
+        }
+      }).catch(() => {
+        spinner.style.display = 'none';
         alert('No se pudo guardar. Verifica tu conexión.');
       });
     }
-  
+
+    // GENERADOR DE HORAS fallback
     function generarHoras(start, end, step) {
-      const arr=[];
-      let [h,
-      m]=start.split(':').map(Number);
-      const [eh,
-      em]=end.split(':').map(Number);
-  
-      while (h < eh || (h===eh && m <=em)) {
-        arr.push(`$ {
-            String(h).padStart(2, '0')
-          }
-  
-          :$ {
-            String(m).padStart(2, '0')
-          }
-  
-          `);
-        m+=step;
-  
-        if (m >=60) {
-          h++;
-          m -=60;
-        }
+      const arr = [];
+      let [h, m] = start.split(':').map(Number);
+      const [eh, em] = end.split(':').map(Number);
+      while (h < eh || (h === eh && m <= em)) {
+        arr.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
+        m += step;
+        if (m >= 60) { h++; m -= 60; }
       }
-  
       return arr;
-    }  
+    }
   </script>
 </body>
 </html>
