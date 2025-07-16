@@ -307,38 +307,48 @@
     }
 
     // GUARDAR CITA (con spinner)
-    function save(fecha, hora) {
-      spinner.style.display = 'block';
-      const p = new URLSearchParams({
-        action: 'save',
-        empleado: user.empleado,
-        rol: user.rol,
-        nomina: user.nomina,
-        nombre: user.nombre,
-        correo: user.correo,
-        fecha, hora
+function save(fecha, hora) {
+  spinner.style.display = 'block';
+  const p = new URLSearchParams({
+    action: 'save',
+    empleado: user.empleado,
+    rol: user.rol,
+    nomina: user.nomina,
+    nombre: user.nombre,
+    correo: user.correo,
+    fecha, hora
+  });
+  jsonp(API_URL + '?' + p.toString()).then(res => {
+    spinner.style.display = 'none';
+    if (res.status === 'ok') {
+      alert('Cita registrada con éxito');
+      // Vuelve a pedir los horarios saturados
+      jsonp(API_URL + '?action=getall').then(data => {
+        reservas = {};
+        data.forEach(({ Fecha, Hora }) => {
+          (reservas[Fecha] ??= {})[Hora] = (reservas[Fecha]?.[Hora] || 0) + 1;
+        });
+        drawCalendar();
+        slot.innerHTML = '';
       });
-      jsonp(API_URL + '?' + p.toString()).then(res => {
-        spinner.style.display = 'none';
-        if (res.status === 'ok') {
-          alert('Cita registrada con éxito');
-          setTimeout(() => location.href = 'index.html', 2500);
-        } else {
-          alert(res.message || 'Error al guardar la cita');
-          jsonp(API_URL + '?action=getall').then(data => {
-            reservas = {};
-            data.forEach(({ Fecha, Hora }) => {
-              (reservas[Fecha] ??= {})[Hora] = (reservas[Fecha]?.[Hora] || 0) + 1;
-            });
-            drawCalendar();
-            slot.innerHTML = '';
+      setTimeout(() => location.href = 'index.html', 1200);
+    } else {
+        alert(res.message || 'Error al guardar la cita');
+        // Siempre refresca los horarios al fallar
+        jsonp(API_URL + '?action=getall').then(data => {
+          reservas = {};
+          data.forEach(({ Fecha, Hora }) => {
+            (reservas[Fecha] ??= {})[Hora] = (reservas[Fecha]?.[Hora] || 0) + 1;
           });
-        }
-      }).catch(() => {
-        spinner.style.display = 'none';
-        alert('No se pudo guardar. Verifica tu conexión.');
-      });
-    }
+          drawCalendar();
+          slot.innerHTML = '';
+        });
+      }
+    }).catch(() => {
+      spinner.style.display = 'none';
+      alert('No se pudo guardar. Verifica tu conexión.');
+    });
+ }
 
     // GENERADOR DE HORAS fallback
     function generarHoras(start, end, step) {
