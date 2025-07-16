@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Tiendita</title>
+    <style>
+        :root {
+            --azul: #0d1c84;
+            --fondo-form: #f5f6ff;
+            --gris-claro: #eef0ff;
+            --sombra: 0 2px 8px rgba(0, 0, 0, .12);
+            --radio: 12px;
+            --trans: .3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #fff;
+            color: #1e1e1e;
+            line-height: 1.4;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 12px 20px;
+            box-shadow: var(--sombra);
+            z-index: 1000;
+            flex-wrap: wrap;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .logo-container img {
+            height: 22px
+        }
+
+        .logo-container span {
+            font-weight: 600;
+            font-size: 18px;
+            white-space: nowrap
+        }
+
+        .nav-link {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--azul);
+            text-decoration: none;
+            transition: var(--trans);
+        }
+
+        .nav-link:hover {
+            opacity: .7
+        }
+
+        .carousel-container {
+            margin: 90px auto 40px;
+            width: 100%;
+            max-width: 900px;
+            border-radius: var(--radio);
+            overflow: hidden;
+            background: var(--gris-claro);
+            position: relative;
+        }
+
+        .carousel {
+            display: flex;
+            transition: transform .10s ease-in-out
+        }
+
+        .carousel img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            padding: 40px;
+            background: var(--gris-claro);
+        }
+
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 28px;
+            background: rgba(0, 0, 0, .25);
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1;
+            transition: var(--trans);
+        }
+
+        .carousel-button:hover {
+            background: rgba(0, 0, 0, .45)
+        }
+
+        .carousel-button.left {
+            left: 10px
+        }
+
+        .carousel-button.right {
+            right: 10px
+        }
+
+        .brands-section {
+            padding: 0 20px 60px;
+            text-align: center
+        }
+
+        .brands-section h2 {
+            color: var(--azul);
+            font-size: 22px;
+            margin-bottom: 25px;
+        }
+
+        .brands {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr); 
+            gap: 12px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        @media(max-width: 768px) {
+            .brands {
+             grid-template-columns: repeat(2, 1fr); 
+            }
+        }
+
+        .brand-card {
+            background: #fff;
+            padding: 15px 10px;
+            border-radius: var(--radio);
+            box-shadow: var(--sombra);
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+
+        .brand-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, .18);
+        }
+
+        .brand-card img {
+            width: 100%;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 12px;
+        }
+
+        .brand-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--azul)
+        }
+
+        .brand-card p {
+            font-size: 14px;
+            color: #555
+        }
+
+        .registro-section {
+            text-align: center;
+            padding: 20px
+        }
+
+        .registro-section h2 {
+            color: var(--azul);
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+       .registro-icon {
+        width: 100px; 
+        height: 100px;
+        margin: 0 auto 20px;
+        background: var(--azul);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .registro-icon img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        }
+
+        .form-container {
+            background: var(--fondo-form);
+            padding: 30px 25px;
+            margin: 0 auto 80px;
+            max-width: 420px;
+            border-radius: var(--radio);
+            box-shadow: var(--sombra);
+            text-align: left;
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .form-container input,
+        .form-container select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+
+        .form-container button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: var(--azul);
+            color: #fff;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--trans);
+        }
+
+        .form-container button:hover {
+            background: #091463
+        }
+
+        footer {
+            background: var(--azul);
+            color: #fff;
+            text-align: center;
+            padding: 25px 10px;
+            font-size: 14px;
+        }
+
+        .aviso {
+            font-size: 12px;
+            margin-top: 10px;
+            color: #ccc;
+        }
+
+        @media(max-width:600px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px 20px
+            }
+
+            .logo-container span {
+                font-size: 16px
+            }
+
+            .nav-link {
+                font-size: 15px
+            }
+
+            .carousel img {
+                padding: 20px;
+                max-height: 200px
+            }
+        }
+
+        @media (max-width: 480px) {
+            .registro-icon {
+                width: 80px;
+                height: 80px;
+            }
+
+            .registro-icon img {
+                width: 90%;
+                height: auto;
+            }
+
+            .registro-section h2 {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                max-width: 92%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="img/logo.png" alt="Logo empresa">
+            <span></span>
+        </div>
+        <a href="#" class="nav-link">Venta Masiva</a>
+    </header>
+    <div class="carousel-container">
+        <button class="carousel-button left" onclick="prevImage()">‹</button>
+        <div class="carousel" id="carousel">
+            <img src="img/imagen10.jpg" alt="Imagen 1">
+            <img src="img/imagen11.jpg" alt="Imagen 2">
+            <img src="img/imagen7.jpg" alt="Imagen 3">
+            <img src="img/imagen5.jpg" alt="Imagen 4">
+            <img src="img/imagen6.jpg" alt="Imagen 5">
+        </div>
+        <button class="carousel-button right" onclick="nextImage()">›</button>
+    </div>
+    <section class="brands-section">
+        <h2>Nuestras Marcas</h2>
+        <div class="brands">
+            <div class="brand-card"><img src="https://upload.wikimedia.org/wikipedia/commons/d/d3/NIVEA_logo_2021.svg"
+                alt="NIVEA">
+                <h3>NIVEA</h3>
+                <p>Cuidado esencial</p>
+            </div>
+            <div class="brand-card"><img src="https://live.staticflickr.com/65535/40896760423_260cb85883_z.jpg"
+                alt="Eucerin">
+                <h3>EUCERIN</h3>
+                <p>Dermatología avanzada</p>
+            </div>
+            <div class="brand-card"><img src="https://1000marcas.net/wp-content/uploads/2021/05/Logo-Labello.jpg"
+                alt="Labello">
+                <h3>LABELLO</h3>
+                <p>Cuidado de labios</p>
+            </div>
+            <div class="brand-card"><img
+                src="https://logowik.com/content/uploads/images/aquaphor-healing-ointment3299.logowik.com.webp"
+                alt="Aquaphor">
+                <h3>AQUAPHOR</h3>
+                <p>Reparación intensiva</p>
+            </div>
+            <div class="brand-card"><img
+                src="https://images.seeklogo.com/logo-png/33/1/coppertone-logo-png_seeklogo-337384.png"
+                alt="Coppertone">
+                <h3>COPPERTONE</h3>
+                <p>Protección solar avanzada</p>
+            </div>
+            <div class="brand-card"><img src="img/marca_atrix.png"
+                alt="Atrix">
+                <h3>ATRIX</h3>
+                <p>Protección para tus manos</p>
+            </div>
+            <div class="brand-card"><img src="img/marca_hansaplast.png" alt="Hansaplast">
+                <h3>HANSAPLAST</h3>
+                <p>Líder en cuidado de las heridas</p>
+            </div>
+        </div>
+    </section>
+    <section class="registro-section">
+        <h2>Registro Mi Tiendita</h2>
+        <div class="registro-icon"><img src="img/sitelogo.png" alt="Formulario"></div>
+        <div class="form-container">
+            <form id="registroForm">
+                <label>¿Eres empleado?</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="tipoEmpleado" value="Interno" required> Interno</label>
+                    <label><input type="radio" name="tipoEmpleado" value="Externo"> Externo</label>
+                </div>
+                <div id="formExterno" style="display:none;">
+                    <label for="nombreExterno">Nombre:</label>
+                    <input type="text" id="nombreExterno" name="nombreExterno" required />
+                    <label for="correoExterno">Correo electrónico:</label>
+                    <input type="email" id="correoExterno" name="correoExterno" required />
+                </div>
+                <div id="formInterno" style="display:none;">
+                    <label for="rol">¿Qué rol eres?</label>
+                    <select id="rol" name="rol" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="Operador">Operador</option>
+                        <option value="Administrativo">Administrativo</option>
+                    </select>
+                    <label for="nomina">Nómina:</label>
+                    <input type="number" id="nomina" name="nomina" required min="0" step="1" />
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" required />
+                    <label for="correo">Correo electrónico:</label>
+                    <input type="email" id="correo" name="correo" required />
+                </div>
+                <button type="submit">Continuar</button>
+                <div id="mensaje"></div>
+            </form>
+        </div>
+    </section>
+    <footer>
+        <div><strong>NIVEA Beiersdorf México, S.A. de C.V.</strong></div>
+        <div>Dirección: Av Sta Fe, La Cebada, 01219 Puerto Interior, Gto.</div>
+        <div class="aviso">Este sitio almacena tu información únicamente para fines de control de acceso a Tiendita
+            BMM.<br>No compartimos tus datos con terceros. Consulta el aviso de privacidad completo en tu área de
+            Recursos Humanos.</div>
+        <div style="margin-top:10px;">© 2025 Tiendita BMM. Todos los derechos reservados.</div>
+    </footer>
+    <script>
+        const carousel = document.getElementById('carousel');
+        const totalSlides = carousel.children.length;
+        let index = 0;
+        const updateCarousel = () => { carousel.style.transform = `translateX(-${index * 100}%)`; };
+        const nextImage = () => { index = (index + 1) % totalSlides; updateCarousel(); };
+        const prevImage = () => { index = (index - 1 + totalSlides) % totalSlides; updateCarousel(); };
+        setInterval(nextImage, 6000);
+        const radioButtons = document.querySelectorAll('input[name="tipoEmpleado"]');
+        const formExterno = document.getElementById('formExterno');
+        const formInterno = document.getElementById('formInterno');
+        radioButtons.forEach(rb =>
+            rb.addEventListener('change', () => {
+                if (rb.value === 'Interno') {
+                    formExterno.style.display = 'none';
+                    formInterno.style.display = 'block';
+                    [...formExterno.querySelectorAll('input')].forEach(el => el.removeAttribute('required'));
+                    [...formInterno.querySelectorAll('input, select')].forEach(el => el.setAttribute('required', ''));
+                } else {
+                    formInterno.style.display = 'none';
+                    formExterno.style.display = 'block';
+                    [...formInterno.querySelectorAll('input, select')].forEach(el => el.removeAttribute('required'));
+                    [...formExterno.querySelectorAll('input')].forEach(el => el.setAttribute('required', ''));
+                }
+            })
+        );
+        document.getElementById('registroForm').addEventListener('submit', e => {
+            if (!e.target.checkValidity()) return;
+            e.preventDefault();
+            const tipo = document.querySelector('input[name="tipoEmpleado"]:checked');
+            if (!tipo) return;
+            let datos = {};
+            if (tipo.value === 'Externo') {
+                const nombre = document.getElementById('nombreExterno').value.trim();
+                const correo = document.getElementById('correoExterno').value.trim();
+                datos = {
+                    empleado: 'Externo',
+                    rol: 'Externo',
+                    nomina: '-',
+                    nombre: nombre,
+                    correo: correo
+                };
+            } else {
+                const rol = document.getElementById('rol').value;
+                const nomina = document.getElementById('nomina').value.trim();
+                if (!/^[0-9]+$/.test(nomina)) {
+                    alert('La nómina solo debe contener números enteros positivos.');
+                    return;
+                }
+                const nombre = document.getElementById('nombre').value.trim();
+                const correo = document.getElementById('correo').value.trim();
+                datos = {
+                    empleado: 'Interno',
+                    rol: rol,
+                    nomina: nomina,
+                    nombre: nombre,
+                    correo: correo
+                };
+            }
+            localStorage.setItem('registroTiendita', JSON.stringify(datos));
+            window.location.href = 'calendario.html';
+        });
+    </script>
+</body>
+
+</html>
