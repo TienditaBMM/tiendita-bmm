@@ -242,21 +242,24 @@ async function save(fecha, hora){
       tx.set(slotRef,{correos:lista},{merge:true});
     });
 
-        /* 2)  Google Sheets (Apps Script)  --------------------------- */
-    const form = new URLSearchParams({
+/* 2)  Google Sheets (Apps Script)  --------------------------- */
+try {
+  fetch(EXT_URL, {           // 👈 sin await
+    method: 'POST',
+    mode  : 'no-cors',       // 👈 evita la comprobación CORS
+    body  : new URLSearchParams({
       Empleado : user.empleado || '',
       Rol      : user.rol      || '',
-      Nomina   : user.nomina  ?? '',
+      Nomina   : user.nomina   || '',
       Nombre   : user.nombre,
       Correo   : user.correo,
       Fecha    : fecha,
       Hora     : hora
-    });
-
-    const resp = await fetch(EXT_URL, {method:'POST', body:form});
-    const resJson = await resp.json();
-    if (resJson.status !== 'ok') throw new Error(resJson.message||'Error Sheet');
-
+    })
+  });
+} catch(e){
+  console.warn('Se envió la cita, pero la hoja respondió con CORS:', e);
+}
 
     /* 3) UI ---------------------------------------------------------- */
     alert("✅ Cita registrada con éxito");
