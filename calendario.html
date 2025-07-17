@@ -207,41 +207,42 @@ function confirmar(fecha,hora){
   document.body.appendChild(bg);
 }
 
-async function save(fecha,hora){
-  spin.style.display="block";
-  const slotRef=db.doc(`slots/${fecha}_${hora}`);
+async function save(fecha, hora) {
+  spin.style.display = "block";
 
-  try{
-    /* ─── 1. Transacción en Firestore ─────────────────────────────── */
-    await db.runTransaction(async tx=>{
-      const snap=await tx.get(slotRef);
-      const lista=snap.exists?(snap.data().correos||[]):[];
-      if(lista.includes(user.correo)) throw "Ya tienes cita en ese horario";
-      if(lista.length>=MAX_CUPOS)     throw "Horario lleno";
-      lista.push(user.correo);
-      tx.set(slotRef,{correos:lista},{merge:true});
-    });
+  const payload = {
+    Empleado: user.empleado ?? "",
+    Rol      : user.rol      ?? "",
+    Nomina   : user.nomina   ?? "",
+    Nombre   : user.nombre,
+    Correo   : user.correo,
+    Fecha    : fecha,
+    Hora     : hora
+  };
 
-    /* ─── 2. Enviar al Google Sheet                                 ─ */
-    await fetch(EXT_URL,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        Empleado: user.empleado||"",
-        Rol:      user.rol||"",
-        Nomina:   user.nomina||"",
-        Nombre:   user.nombre,
-        Correo:   user.correo,
-        Fecha:    fecha,
-        Hora:     hora
-      })
-    });
+  try {
+    const r = await fetch(
+      "https://us-central1-registrotienditabmm.cloudfunctions.net/ext-http-export-sheets-saveRecord",
+      {
+        method : "POST",
+        headers: { "Content-Type": "application/json" },
+        body   : JSON.stringify(payload)
+      }
+    );
 
-    alert("✅ Cita registrada con éxito");
-    await refrescarReservas(); drawCalendar(); slot.innerHTML="";
-    setTimeout(()=>location.href="index.html", 900);
-  }catch(err){ alert("❌ "+err); }
-  finally{ spin.style.display="none"; }
+    if (!r.ok) throw new Error(await r.text());
+
+    alert("✅ Cita registrada con éxito");
+    await refrescarReservas();
+    drawCalendar();
+    slot.innerHTML = "";
+    setTimeout(() => location.href = "index.html", 900);
+
+  } catch (err) {
+    alert("❌ " + err.message || err);
+  } finally {
+    spin.style.display = "none";
+  }
 }
 
 /* ------------------------------------------------------------------ */
