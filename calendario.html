@@ -242,20 +242,21 @@ async function save(fecha, hora){
       tx.set(slotRef,{correos:lista},{merge:true});
     });
 
-    /* 2) Google Sheets (external extension) -------------------------- */
-await fetch(EXT_URL,{
-  method:'POST',
-  headers:{'Content-Type':'application/json'},
-  body:JSON.stringify({
-    Empleado : user.empleado || '',
-    Rol      : user.rol      || '',
-    Nomina   : user.nomina   || '',
-    Nombre   : user.nombre,
-    Correo   : user.correo,
-    Fecha    : fecha,
-    Hora     : hora
-  })
-});
+        /* 2)  Google Sheets (Apps Script)  --------------------------- */
+    const form = new URLSearchParams({
+      Empleado : user.empleado || '',
+      Rol      : user.rol      || '',
+      Nomina   : user.nomina  ?? '',
+      Nombre   : user.nombre,
+      Correo   : user.correo,
+      Fecha    : fecha,
+      Hora     : hora
+    });
+
+    const resp = await fetch(EXT_URL, {method:'POST', body:form});
+    const resJson = await resp.json();
+    if (resJson.status !== 'ok') throw new Error(resJson.message||'Error Sheet');
+
 
     /* 3) UI ---------------------------------------------------------- */
     alert("✅ Cita registrada con éxito");
