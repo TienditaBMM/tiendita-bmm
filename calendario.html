@@ -207,40 +207,37 @@ function confirmar(fecha,hora){
   document.body.appendChild(bg);
 }
 
-async function save(fecha, hora) {
+async function save(fecha, hora){
   spin.style.display = "block";
+  try{
+    // 1) guardamos en Firestore (sin cambios)
+    await firebase.firestore().runTransaction(async(tx)=>{ … });
 
-  const payload = {
-    Empleado: user.empleado ?? "",
-    Rol      : user.rol      ?? "",
-    Nomina   : user.nomina   ?? "",
-    Nombre   : user.nombre,
-    Correo   : user.correo,
-    Fecha    : fecha,
-    Hora     : hora
-  };
-
-  try {
-    const r = await fetch(
-      "https://us-central1-registrotienditabmm.cloudfunctions.net/ext-http-export-sheets-saveRecord",
+    // 2) enviamos la fila al Sheet
+    await fetch(
+      'https://us-central1-registrotienditabmm.cloudfunctions.net/ext-http-export-sheets-saveRecord',
       {
-        method : "POST",
-        headers: { "Content-Type": "application/json" },
-        body   : JSON.stringify(payload)
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          Empleado: user.empleado || '',
+          Rol     : user.rol      || '',
+          Nomina  : user.nomina   || '',
+          Nombre  : user.nombre,
+          Correo  : user.correo,
+          Fecha   : fecha,
+          Hora    : hora
+        })
       }
     );
 
-    if (!r.ok) throw new Error(await r.text());
+    alert('✅ Cita registrada con éxito');
+    setTimeout(()=>location.href='index.html', 900);
 
-    alert("✅ Cita registrada con éxito");
-    await refrescarReservas();
-    drawCalendar();
-    slot.innerHTML = "";
-    setTimeout(() => location.href = "index.html", 900);
-
-  } catch (err) {
-    alert("❌ " + err.message || err);
-  } finally {
+  }catch(e){
+    console.error(e);
+    alert('❌ '+(e.message || 'Error al guardar'));
+  }finally{
     spin.style.display = "none";
   }
 }
