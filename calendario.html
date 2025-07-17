@@ -103,7 +103,7 @@ const db = firebase.firestore();
 /* 2 ‑ Constantes / helpers                                            */
 /* ------------------------------------------------------------------ */
 const MAX_CUPOS = 3;
-const EXT_URL   = "https://us-central1-registrotienditabmm.cloudfunctions.net/ext-http-export-sheets-saveRecord";
+const EXT_URL   = "https://script.google.com/macros/s/AKfycbwOmysw6yp4l-Je_g78Gu9NZoMJC9xsH_cEx5kkjItsZ2aQG1j8UF3cLhLxBuRckVDa/exec";
 
 const $ = id => document.getElementById(id);
 const cal  = $("calendar"),
@@ -243,19 +243,19 @@ async function save(fecha, hora){
     });
 
     /* 2) Google Sheets (external extension) -------------------------- */
-    await fetch(EXT_URL,{
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify({
-        Empleado : user.empleado || "",
-        Rol      : user.rol      || "",
-        Nomina   : user.nomina   || "",
-        Nombre   : user.nombre,
-        Correo   : user.correo,
-        Fecha    : fecha,
-        Hora     : hora
-      })
-    });
+await fetch(EXT_URL,{
+  method:'POST',
+  headers:{'Content-Type':'application/json'},
+  body:JSON.stringify({
+    Empleado : user.empleado || '',
+    Rol      : user.rol      || '',
+    Nomina   : user.nomina   || '',
+    Nombre   : user.nombre,
+    Correo   : user.correo,
+    Fecha    : fecha,
+    Hora     : hora
+  })
+});
 
     /* 3) UI ---------------------------------------------------------- */
     alert("✅ Cita registrada con éxito");
