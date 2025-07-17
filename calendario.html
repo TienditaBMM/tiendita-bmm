@@ -4,14 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Reserva – Tiendita BMM</title>
+
 <style>
   :root{--azul:#0d1c84;--gris:#eef0ff;--radio:12px;--sombra:0 2px 8px rgba(0,0,0,.12)}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Segoe UI',sans-serif;line-height:1.4;display:flex;flex-direction:column;min-height:100vh}
+
+  /* ---------- barra superior ---------- */
   header{background:#fff;box-shadow:var(--sombra);padding:12px 20px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10}
   header img{height:28px} header span{font-weight:600;font-size:18px}
-  main{flex:1;max-width:900px;margin:30px auto;padding:0 15px}
-  h2{color:var(--azul);margin:24px 0;text-align:center}
+
+  /* ---------- contenido ---------- */
+  main{flex:1;max-width:900px;margin:30px auto;padding:0 15px;text-align:center}
+  h1{color:var(--azul);font-size:28px;margin:18px 0 4px}
+  h2{color:var(--azul);margin:6px 0 26px;font-size:22px}
+
+  /* calendario */
   .calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
   .day-header,.day{padding:8px;text-align:center;border-radius:var(--radio)}
   .day-header{font-weight:700;background:var(--gris)}
@@ -20,18 +28,29 @@
   .day.disabled{background:#f1f1f1;color:#999;cursor:not-allowed}
   .selected{outline:2px solid var(--azul)}
   @media(max-width:600px){.day{min-height:55px;font-size:14px}}
-  .slots{margin-top:30px;display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
-  .slot-btn{width:100%;padding:10px 0;border:none;border-radius:var(--radio);background:var(--azul);color:#fff;font-weight:600;cursor:pointer}
+
+  /* horarios */
+  .slots{margin-top:30px;display:grid;gap:10px;grid-template-columns:repeat(6,1fr)}
+  .slot-btn{width:100%;padding:10px 0;border:none;border-radius:var(--radio);background:var(--azul);color:#fff;font-weight:600;cursor:pointer;transition:filter .15s}
+  .slot-btn:hover{filter:brightness(1.1)}
   .slot-btn[disabled]{background:#ccc;color:#666;cursor:not-allowed}
-  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:100}
-  .modal{background:#fff;padding:24px;border-radius:var(--radio);box-shadow:var(--sombra);max-width:400px;width:90%;text-align:center}
-  .confirm{background:var(--azul);color:#fff;margin-right:10px}
-  .cancel{background:#ccc}
-  #spinner{display:none;text-align:center;margin-top:20px;font-weight:bold}
-  footer{background:var(--azul);color:#fff;text-align:center;padding:18px 10px;font-size:14px}
   @media(max-width:750px){.slots{grid-template-columns:repeat(3,1fr)}}
   @media(max-width:520px){.slots{grid-template-columns:repeat(2,1fr)}}
+
+  /* modal confirmación */
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:100}
+  .modal{background:#fff;padding:24px;border-radius:var(--radio);box-shadow:var(--sombra);max-width:380px;width:90%;text-align:center}
+  .modal h3{margin-bottom:15px;color:var(--azul)}
+  .modal p{margin:3px 0}
+  .modal button{margin-top:18px;padding:14px 26px;border:none;border-radius:var(--radio);font-weight:700;font-size:16px;cursor:pointer}
+  .btn-ok{background:#24a148;color:#fff;margin-right:14px}
+  .btn-cancel{background:#d82c0d;color:#fff}
+
+  /* otros */
+  #spinner{display:none;text-align:center;margin-top:20px;font-weight:bold;font-size:17px}
+  footer{background:var(--azul);color:#fff;text-align:center;padding:18px 10px;font-size:14px}
 </style>
+
 <!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -40,77 +59,95 @@
 <header>
   <img src="img/sitelogo.png" alt="Logo"><span>Mi Tiendita</span>
 </header>
+
 <main>
+  <h1 id="mes"></h1>
   <h2>Selecciona tu cita</h2>
+
   <div id="calendar" class="calendar"></div>
   <div id="slots"    class="slots"></div>
   <div id="spinner">⏳ Guardando cita…</div>
 </main>
+
 <footer>© 2025 Tiendita BMM — Uso interno</footer>
 
 <script>
-/* === 1. Firebase: pega tu configuración aquí === */
-const firebaseConfig = {
-  apiKey: "AIzaSyDvHy46iATTlnwpOgWgSib2Tm43SJPkjzY",
-  authDomain: "registrotienditabmm.firebaseapp.com",
-  projectId: "registrotienditabmm",
-  storageBucket: "registrotienditabmm.firebasestorage.app",
-  messagingSenderId: "481496922941",
-  appId: "1:481496922941:web:dbc1359a2e69623bafa354"
-};
-firebase.initializeApp(firebaseConfig);
+/* ------------------------------------------------------------------ */
+/* 1 ‑ Firebase inicialización                                        */
+/* ------------------------------------------------------------------ */
+firebase.initializeApp({
+  apiKey:            "AIzaSyDvHy46iATTlnwpOgWgSib2Tm43SJPkjzY",
+  authDomain:        "registrotienditabmm.firebaseapp.com",
+  projectId:         "registrotienditabmm"
+});
 const db = firebase.firestore();
 
-/* === 2. Constantes y helpers === */
+/* ------------------------------------------------------------------ */
+/* 2 ‑ Constantes y utilidades                                        */
+/* ------------------------------------------------------------------ */
 const MAX_CUPOS = 3;
-const cal   = document.getElementById("calendar");
-const slot  = document.getElementById("slots");
-const spin  = document.getElementById("spinner");
-let HORAS = [], FESTIVOS = [], reservas = {};
-let selectedCell = null;
+const EXT_URL   = "https://us-central1-registrotienditabmm.cloudfunctions.net/ext-http-export-sheets-saveRecord";
+
+const $ = id => document.getElementById(id);
+const cal  = $("calendar"),
+      slot = $("slots"),
+      spin = $("spinner"),
+      hMes = $("mes");
+
+let HORAS=[], FESTIVOS=[], reservas={}, selectedCell=null;
+
 const user = JSON.parse(localStorage.getItem("registroTiendita")||"null");
 if(!user||!user.nombre){ alert("Debes registrarte primero"); location.href="index.html"; }
 
-const cleanHour = h => (h||"").toString().match(/\d{2}:\d{2}/)?.[0]||"";
+const cleanHour = h=>(h||"").toString().match(/\d{2}:\d{2}/)?.[0]||"";
 
-/* === 3. Carga inicial === */
-(async ()=> {
-  /* Horarios */
-  const hSnap = await db.doc("horarios/lista").get();
-  HORAS = (hSnap.exists ? hSnap.data().items : []).map(cleanHour);
+/* ------------------------------------------------------------------ */
+/* 3 ‑ Carga de configuración                                         */
+/* ------------------------------------------------------------------ */
+(async ()=>{
+  /* horarios */
+  const hSnap = await db.doc("config/horarios").get();
+  HORAS = (hSnap.exists ? hSnap.data().slots : []).map(cleanHour);
   if(!HORAS.length) HORAS = generarHoras("13:00","16:50",10);
 
-  /* Festivos (doc id = yyyy-mm-dd) */
-  const fSnap = await db.collection("festivos").get();
-  FESTIVOS = fSnap.docs.map(d=>d.id);
+/* festivos */
+const fDoc = await db.doc("config/festivos").get();          // antes era collection()
+FESTIVOS = fDoc.exists ? fDoc.data().fechas || [] : [];
 
-  /* Reservas (ocupación) */
+
+  /* reservas ocupadas */
   await refrescarReservas();
 
   drawCalendar();
 })();
 
 async function refrescarReservas(){
-  reservas = {};
+  reservas={};
   const sSnap = await db.collection("slots").get();
   sSnap.forEach(doc=>{
-    const [fecha,hora] = doc.id.split("_");
+    const [fecha,hora]=doc.id.split("_");
     reservas[fecha] ??= {};
-    reservas[fecha][hora] = (doc.data().correos||[]).length;
+    reservas[fecha][hora]=(doc.data().correos||[]).length;
   });
 }
 
-/* === 4. Calendario === */
+/* ------------------------------------------------------------------ */
+/* 4 ‑ Pintar calendario                                              */
+/* ------------------------------------------------------------------ */
 function drawCalendar(){
   cal.innerHTML="";
   ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].forEach(d=>{
-    const h=document.createElement("div");h.className="day-header";h.textContent=d;cal.appendChild(h);
+    const th=document.createElement("div");
+    th.className="day-header";th.textContent=d;cal.appendChild(th);
   });
-  const todayISO = new Date().toISOString().split("T")[0];
-  const base = new Date(); base.setDate(1);
+
+  const base=new Date(); base.setDate(1);
+  hMes.textContent = base.toLocaleString("es",{month:"long",year:"numeric"});
+
   const y=base.getFullYear(), m=base.getMonth();
+  const todayISO=(new Date).toISOString().split("T")[0];
   const offset=(new Date(y,m,1).getDay()+6)%7;
-  const days=new Date(y,m+1,0).getDate();
+  const days = new Date(y,m+1,0).getDate();
 
   for(let i=0;i<offset;i++) cal.appendChild(disabledCell());
 
@@ -118,77 +155,100 @@ function drawCalendar(){
     const dt=new Date(y,m,d), iso=dt.toISOString().split("T")[0], wd=dt.getDay();
     const cell=document.createElement("div");
     cell.className="day"; cell.textContent=d;
+
     if(wd===0||wd===6||FESTIVOS.includes(iso)||iso<todayISO){
       cell.classList.add("disabled");
     }else{
       const taken = Object.values(reservas[iso]||{}).reduce((a,b)=>a+b,0);
-      const total  = HORAS.length*MAX_CUPOS;
-      if(taken>=total)         cell.classList.add("full");
-      else if(taken>=total/2)  cell.classList.add("medium");
-      cell.onclick = ()=>{ selectCell(cell); showSlots(iso); };
+      const total = HORAS.length*MAX_CUPOS;
+      if(taken>=total) cell.classList.add("full");
+      else if(taken>=total/2) cell.classList.add("medium");
+      cell.onclick=()=>{ selectCell(cell); showSlots(iso); };
     }
     if(iso===todayISO) selectCell(cell);
     cal.appendChild(cell);
   }
 }
-function disabledCell(){ const d=document.createElement("div"); d.className="day disabled"; return d; }
-function selectCell(c){ if(selectedCell) selectedCell.classList.remove("selected"); selectedCell=c; c.classList.add("selected"); }
+const disabledCell=()=>{const d=document.createElement("div");d.className="day disabled";return d;};
+function selectCell(c){if(selectedCell)selectedCell.classList.remove("selected");selectedCell=c;c.classList.add("selected");}
 
-/* === 5. Lista de horarios === */
+/* ------------------------------------------------------------------ */
+/* 5 ‑ Listado de horas disponible                                    */
+/* ------------------------------------------------------------------ */
 function showSlots(iso){
   slot.innerHTML="";
-  const occ = reservas[iso]||{};
+  const occ=reservas[iso]||{};
   HORAS.forEach(h=>{
     const b=document.createElement("button");
     b.className="slot-btn"; b.textContent=h;
     if((occ[h]||0)>=MAX_CUPOS) b.disabled=true;
-    b.onclick = ()=>confirmar(iso,h);
+    b.onclick=()=>confirmar(iso,h);
     slot.appendChild(b);
   });
 }
 
-/* === 6. Confirmación y guardado (transacción) === */
+/* ------------------------------------------------------------------ */
+/* 6 ‑ Confirmar y guardar                                            */
+/* ------------------------------------------------------------------ */
 function confirmar(fecha,hora){
   const bg=document.createElement("div"); bg.className="modal-bg";
-  bg.innerHTML=`<div class="modal">
-    <h3>Confirma tu cita</h3>
-    <p><b>Nombre:</b> ${user.nombre}</p>
-    <p><b>Correo:</b> ${user.correo}</p>
-    <p><b>Fecha:</b> ${fecha}</p>
-    <p><b>Hora:</b> ${hora}</p>
-    <button class="confirm">Aceptar</button>
-    <button class="cancel">Cancelar</button>
-  </div>`;
-  bg.querySelector(".cancel").onclick=()=>bg.remove();
-  bg.querySelector(".confirm").onclick=()=>{ bg.remove(); save(fecha,hora); };
+  bg.innerHTML=`
+    <div class="modal">
+      <h3>Confirma tu cita</h3>
+      <p><b>Nombre:</b> ${user.nombre}</p>
+      <p><b>Correo:</b> ${user.correo}</p>
+      <p><b>Fecha:</b> ${fecha}</p>
+      <p><b>Hora:</b> ${hora}</p>
+      <button class="btn-ok">Aceptar</button>
+      <button class="btn-cancel">Cancelar</button>
+    </div>`;
+  bg.querySelector(".btn-cancel").onclick=()=>bg.remove();
+  bg.querySelector(".btn-ok").onclick=()=>{ bg.remove(); save(fecha,hora); };
   document.body.appendChild(bg);
 }
 
 async function save(fecha,hora){
   spin.style.display="block";
-  const slotRef = db.doc(`slots/${fecha}_${hora}`);
+  const slotRef=db.doc(`slots/${fecha}_${hora}`);
+
   try{
-    await db.runTransaction(async (tx)=>{
-      const snap = await tx.get(slotRef);
-      const lista = snap.exists ? (snap.data().correos||[]) : [];
+    /* ─── 1. Transacción en Firestore ─────────────────────────────── */
+    await db.runTransaction(async tx=>{
+      const snap=await tx.get(slotRef);
+      const lista=snap.exists?(snap.data().correos||[]):[];
       if(lista.includes(user.correo)) throw "Ya tienes cita en ese horario";
       if(lista.length>=MAX_CUPOS)     throw "Horario lleno";
       lista.push(user.correo);
       tx.set(slotRef,{correos:lista},{merge:true});
     });
+
+    /* ─── 2. Enviar al Google Sheet                                 ─ */
+    await fetch(EXT_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        Empleado: user.empleado||"",
+        Rol:      user.rol||"",
+        Nomina:   user.nomina||"",
+        Nombre:   user.nombre,
+        Correo:   user.correo,
+        Fecha:    fecha,
+        Hora:     hora
+      })
+    });
+
     alert("✅ Cita registrada con éxito");
-    await refrescarReservas();
-    drawCalendar(); slot.innerHTML="";
-  }catch(err){
-    alert("❌ "+err);
-  }finally{
-    spin.style.display="none";
-  }
+    await refrescarReservas(); drawCalendar(); slot.innerHTML="";
+    setTimeout(()=>location.href="index.html", 900);
+  }catch(err){ alert("❌ "+err); }
+  finally{ spin.style.display="none"; }
 }
 
-/* === 7. Generador de rango de horas de emergencia === */
+/* ------------------------------------------------------------------ */
+/* 7 ‑ Generar horas de emergencia                                    */
+/* ------------------------------------------------------------------ */
 function generarHoras(start,end,step){
-  const out=[]; let [h,m]=start.split(":").map(Number); const [eh,em]=end.split(":").map(Number);
+  const out=[]; let[h,m]=start.split(":").map(Number);const[eh,em]=end.split(":").map(Number);
   while(h<eh||(h===eh&&m<=em)){ out.push(`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`); m+=step; if(m>=60){h++;m-=60;} }
   return out;
 }
