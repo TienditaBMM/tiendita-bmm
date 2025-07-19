@@ -539,8 +539,9 @@
             const cantidad = parseInt([...radios].find(r => r.checked)?.value || 0);
             if (cantidad > 0) {
                 productosSeleccionados.push({
-                    nombre: `${nombre} x ${cantidad}`,
-                    total: precio * cantidad
+                  nombre,
+                  cantidad,
+                  total: precio * cantidad
                 });
             }
         });
@@ -551,7 +552,9 @@
         document.getElementById('nombreHidden').value = tipo === "Interno" ? document.getElementById("nombreInterno").value : document.getElementById("nombreExterno").value;
         document.getElementById('celularHidden').value = tipo === "Interno" ? document.getElementById("celularInterno").value : document.getElementById("celularExterno").value;
         document.getElementById('correoHidden').value = tipo === "Interno" ? document.getElementById("correoInterno").value : document.getElementById("correoExterno").value;
-        document.getElementById('productosHidden').value = JSON.stringify(productosSeleccionados);
+        document.getElementById('productosHidden').value = productosSeleccionados
+          .map(p => `${p.nombre}=${p.total}`)
+          .join(',');
 
         // Enviar el formulario
         document.getElementById('pedidoForm').submit();
