@@ -404,7 +404,7 @@
 
         productos.forEach(p => {
             const nombre = p.dataset.nombre;
-            const precio = parseInt(p.dataset.precios);
+            const precio = parseInt(p.dataset.precio);
             const radios = p.querySelectorAll('input[type="radio"]');
             const cantidad = parseInt([...radios].find(r => r.checked)?.value || 0);
             if (cantidad > 0) {
@@ -497,7 +497,7 @@
         info += `<h4>Productos Seleccionados:</h4>`;
         productos.forEach(p => {
             const nombre = p.dataset.nombre;
-            const precio = parseInt(p.dataset.precios);
+            const precio = parseInt(p.dataset.precio);
             const radios = p.querySelectorAll('input[type="radio"]');
             const cantidad = parseInt([...radios].find(r => r.checked)?.value || 0);
             if (cantidad > 0) {
@@ -534,7 +534,7 @@
 
         productos.forEach(p => {
             const nombre = p.dataset.nombre;
-            const precio = parseInt(p.dataset.precios);
+            const precio = parseInt(p.dataset.precio);
             const radios = p.querySelectorAll('input[type="radio"]');
             const cantidad = parseInt([...radios].find(r => r.checked)?.value || 0);
             if (cantidad > 0) {
@@ -553,7 +553,7 @@
         document.getElementById('celularHidden').value = tipo === "Interno" ? document.getElementById("celularInterno").value : document.getElementById("celularExterno").value;
         document.getElementById('correoHidden').value = tipo === "Interno" ? document.getElementById("correoInterno").value : document.getElementById("correoExterno").value;
         document.getElementById('productosHidden').value = productosSeleccionados
-          .map(p => `${p.nombre}=${p.total}`)
+          .map(p => `${p.nombre} x ${p.cantidad}=${p.total}`)
           .join(',');
 
         // Enviar el formulario
