@@ -87,7 +87,6 @@
 
         .producto img {
             max-width: 200px;
-            /* Aumentado de 120px a 200px */
             border-radius: var(--radio);
         }
 
@@ -191,17 +190,14 @@
                 flex-direction: column;
                 align-items: center;
             }
-
             .producto img {
                 max-width: 100%;
-                /* Ajuste responsivo para pantallas pequeñas */
             }
         }
     </style>
 </head>
 
 <body>
-
     <header>
         <img src="img/logoBeiersdorf.png" alt="Beiersdorf" />
         <h1>Venta Masiva Agosto 2025</h1>
@@ -232,7 +228,6 @@
         <section id="catalogoProductos">
             <h2>Catálogo de Productos</h2>
 
-            <!-- Producto 1 -->
             <div class="producto" data-nombre="Labello Labial" data-precio="1056">
                 <img src="img/labello_1.jpg" alt="Labial" />
                 <div class="producto-info">
@@ -248,7 +243,6 @@
                 </div>
             </div>
 
-            <!-- Producto 2 -->
             <div class="producto" data-nombre="NIVEA Crema Corporal" data-precio="660">
                 <img src="img/crema_corporal_1.jpg" alt="Crema Corporal" />
                 <div class="producto-info">
@@ -264,7 +258,6 @@
                 </div>
             </div>
 
-            <!-- Producto 3 -->
             <div class="producto" data-nombre="NIVEA Crema Facial" data-precio="4500">
                 <img src="img/crema_facial_1.jpg" alt="Crema Facial" />
                 <div class="producto-info">
@@ -280,7 +273,6 @@
                 </div>
             </div>
 
-            <!-- Producto 4 -->
             <div class="producto" data-nombre="NIVEA MEN Desodorante" data-precio="1500">
                 <img src="img/nivea_men_desodorante_1.jpg" alt="MEN Desodorante" />
                 <div class="producto-info">
@@ -296,7 +288,6 @@
                 </div>
             </div>
 
-            <!-- Producto 5 -->
             <div class="producto" data-nombre="NIVEA Crema Tarro" data-precio="250">
                 <img src="img/crema_tarro_1.jpg" alt="NIVEA Crema Tarro" />
                 <div class="producto-info">
@@ -322,11 +313,9 @@
     </main>
 
     <footer class="pie">
-        © 2025 Tiendita BMM – Venta Masiva | <a href="javascript:void(0)" onclick="mostrarAviso()">Aviso de
-            Privacidad</a>
+        © 2025 Tiendita BMM – Venta Masiva | <a href="javascript:void(0)" onclick="mostrarAviso()">Aviso de Privacidad</a>
     </footer>
 
-    <!-- MODAL AVISO EXTERNO -->
     <div class="modal" id="modalAviso">
         <div class="modal-content">
             <button class="close-modal" onclick="document.getElementById('modalAviso').style.display='none'">✖</button>
@@ -335,13 +324,11 @@
         </div>
     </div>
 
-    <!-- MODAL CONFIRMACIÓN -->
     <div class="modal" id="modalConfirmacion">
         <div class="modal-content">
             <h3>Confirmar Pedido</h3>
             <div id="detallePedido"></div>
-            <button class="cancelar"
-                onclick="document.getElementById('modalConfirmacion').style.display='none'">Cancelar</button>
+            <button class="cancelar" onclick="document.getElementById('modalConfirmacion').style.display='none'">Cancelar</button>
             <button class="confirmar" onclick="confirmarEnvio()">Confirmar Pedido</button>
         </div>
     </div>
@@ -356,17 +343,15 @@
         const celularInterno = document.getElementById('celularInterno');
         const celularExterno = document.getElementById('celularExterno');
 
-        // Restringir entrada a solo números en campos de celular
         [celularInterno, celularExterno].forEach(campo => {
             campo.addEventListener('input', function (e) {
-                this.value = this.value.replace(/[^0-9]/g, ''); // Elimina cualquier carácter no numérico
+                this.value = this.value.replace(/[^0-9]/g, '');
                 if (this.value.length > 10) {
-                    this.value = this.value.slice(0, 10); // Limita a 10 caracteres
+                    this.value = this.value.slice(0, 10);
                 }
             });
         });
 
-        // Ocultar formularios y radios al cargar
         window.addEventListener('DOMContentLoaded', () => {
             tipoRadios.forEach(r => r.checked = false);
             interno.classList.add("oculto");
@@ -382,7 +367,6 @@
             });
         });
 
-        // Escuchar cambios en los radios de productos
         productos.forEach(producto => {
             const radios = producto.querySelectorAll('input[type="radio"]');
             radios.forEach(radio => {
@@ -454,7 +438,6 @@
                 }
             });
 
-            // Verificar si se seleccionó al menos un producto
             let tieneProductos = false;
             productos.forEach(p => {
                 const radios = p.querySelectorAll('input[type="radio"]');
@@ -475,7 +458,6 @@
                 return;
             }
 
-            // Armar texto del resumen para el modal
             let info = `<p><strong>Tipo:</strong> ${tipo}</p>`;
             if (tipo === "Interno") {
                 info += `<p><strong>Nombre:</strong> ${document.getElementById("nombreInterno").value}</p>`;
@@ -528,7 +510,8 @@
             productos.forEach(p => {
                 const nombre = p.dataset.nombre;
                 const precio = parseInt(p.dataset.precio);
-                const cantidad = parseInt([...p.querySelectorAll('input[type="radio"]')].find(r => r.checked)?.value || 0);
+                const radios = p.querySelectorAll('input[type="radio"]');
+                const cantidad = parseInt([...radios].find(r => r.checked)?.value || 0);
                 if (cantidad > 0) {
                     productosSeleccionados.push({
                         nombre: `${nombre} x ${cantidad}`,
@@ -549,30 +532,29 @@
             };
 
             fetch("https://script.google.com/macros/s/AKfycbzgMKRaneoWHg4OoBaYIEN04p74LPvNLY0lWfrvRTMvHhRBMnu0_NmckAg10xwEsQ9QIA/exec", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(datos)
-  })
-    .then(res => res.json())
-    .then(response => {
-      if (response.status === "ok") {
-        alert("✅ Pedido enviado correctamente");
-        // Aquí puedes generar PDF o resetear el formulario si gustas
-      } else {
-        alert("❌ Hubo un error al enviar el pedido. Intenta nuevamente.");
-      }
-    })
-    .catch(err => {
-      console.error("Error de red:", err);
-      alert("❌ Error de red al enviar el pedido. Verifica tu conexión.");
-    });
-            document.getElementById("modalConfirmacion").style.display = "none";
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data) // Corregido de 'datos' a 'data'
+            })
+                .then(res => res.json())
+                .then(response => {
+                    if (response.status === "ok") {
+                        alert("✅ Pedido enviado correctamente");
+                    } else {
+                        alert("❌ Hubo un error al enviar el pedido. Intenta nuevamente.");
+                    }
+                })
+                .catch(err => {
+                    console.error("Error de red:", err);
+                    alert("❌ Error de red al enviar el pedido. Verifica tu conexión.");
+                })
+                .finally(() => {
+                    document.getElementById("modalConfirmacion").style.display = "none";
+                });
         }
-
     </script>
-
 </body>
 
 </html>
