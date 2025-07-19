@@ -336,243 +336,230 @@
     </div>
 
     <!-- MODAL CONFIRMACIÓN -->
-    <div class="modal" id="modalConfirmacion">
-        <div class="modal-content">
-            <h3>Confirmar Pedido</h3>
-            <div id="detallePedido"></div>
-            <button class="cancelar"
-                onclick="document.getElementById('modalConfirmacion').style.display='none'">Cancelar</button>
-            <button class="confirmar" onclick="confirmarEnvio()">Confirmar Pedido</button>
-        </div>
+<div class="modal" id="modalConfirmacion">
+    <div class="modal-content">
+        <h3>Confirmar Pedido</h3>
+        <div id="detallePedido"></div>
+        <form id="pedidoForm" action="https://script.google.com/macros/s/AKfycbzgMKRaneoWHg4OoBaYIEN04p74LPvNLY0lWfrvRTMvHhRBMnu0_NmckAg10xwEsQ9QIA/exec" method="POST" style="display: none;">
+            <input type="hidden" name="tipo" id="tipoHidden">
+            <input type="hidden" name="nomina" id="nominaHidden">
+            <input type="hidden" name="nombre" id="nombreHidden">
+            <input type="hidden" name="celular" id="celularHidden">
+            <input type="hidden" name="correo" id="correoHidden">
+            <input type="hidden" name="productos" id="productosHidden">
+        </form>
+        <button class="cancelar" onclick="document.getElementById('modalConfirmacion').style.display='none'">Cancelar</button>
+        <button class="confirmar" onclick="confirmarEnvio()">Confirmar Pedido</button>
     </div>
+</div>
 
-    <script>
-        const tipoRadios = document.querySelectorAll('input[name="tipoEmpleado"]');
-        const interno = document.getElementById('datosInterno');
-        const externo = document.getElementById('datosExterno');
-        const productos = document.querySelectorAll('.producto');
-        const listaResumen = document.getElementById('listaResumen');
-        const totalResumen = document.getElementById('totalResumen');
-        const celularInterno = document.getElementById('celularInterno');
-        const celularExterno = document.getElementById('celularExterno');
+<script>
+    const tipoRadios = document.querySelectorAll('input[name="tipoEmpleado"]');
+    const interno = document.getElementById('datosInterno');
+    const externo = document.getElementById('datosExterno');
+    const productos = document.querySelectorAll('.producto');
+    const listaResumen = document.getElementById('listaResumen');
+    const totalResumen = document.getElementById('totalResumen');
+    const celularInterno = document.getElementById('celularInterno');
+    const celularExterno = document.getElementById('celularExterno');
 
-        // Restringir entrada a solo números en campos de celular
-        [celularInterno, celularExterno].forEach(campo => {
-            campo.addEventListener('input', function (e) {
-                this.value = this.value.replace(/[^0-9]/g, ''); // Elimina cualquier carácter no numérico
-                if (this.value.length > 10) {
-                    this.value = this.value.slice(0, 10); // Limita a 10 caracteres
-                }
-            });
-        });
-
-        // Ocultar formularios y radios al cargar
-        window.addEventListener('DOMContentLoaded', () => {
-            tipoRadios.forEach(r => r.checked = false);
-            interno.classList.add("oculto");
-            externo.classList.add("oculto");
-            actualizarResumen();
-        });
-
-        tipoRadios.forEach(radio => {
-            radio.addEventListener('change', () => {
-                const tipo = document.querySelector('input[name="tipoEmpleado"]:checked')?.value;
-                interno.classList.toggle("oculto", tipo !== "Interno");
-                externo.classList.toggle("oculto", tipo !== "Externo");
-            });
-        });
-
-        // Escuchar cambios en los radios de productos
-        productos.forEach(producto => {
-            const radios = producto.querySelectorAll('input[type="radio"]');
-            radios.forEach(radio => {
-                radio.addEventListener('change', actualizarResumen);
-            });
-        });
-
-        function actualizarResumen() {
-            let total = 0;
-            let resumen = '<h4>Productos Seleccionados:</h4>';
-            let tieneProductos = false;
-
-            productos.forEach(p => {
-                const nombre = p.dataset.nombre;
-                const precio = parseInt(p.dataset.precio);
-                const radios = p.querySelectorAll('input[type="radio"]');
-                const cantidad = parseInt([...radios].find(r => r.checked)?.value || 0);
-                if (cantidad > 0) {
-                    const subtotal = precio * cantidad;
-                    resumen += `<p>${nombre} x ${cantidad} = $${subtotal.toLocaleString()} MXN</p>`;
-                    total += subtotal;
-                    tieneProductos = true;
-                }
-            });
-
-            if (!tieneProductos) {
-                resumen = 'No hay productos seleccionados';
+    // Restringir entrada a solo números en campos de celular
+    [celularInterno, celularExterno].forEach(campo => {
+        campo.addEventListener('input', function (e) {
+            this.value = this.value.replace(/[^0-9]/g, ''); // Elimina cualquier carácter no numérico
+            if (this.value.length > 10) {
+                this.value = this.value.slice(0, 10); // Limita a 10 caracteres
             }
+        });
+    });
 
-            listaResumen.innerHTML = resumen;
-            totalResumen.textContent = `$${total.toLocaleString()} MXN`;
+    // Ocultar formularios y radios al cargar
+    window.addEventListener('DOMContentLoaded', () => {
+        tipoRadios.forEach(r => r.checked = false);
+        interno.classList.add("oculto");
+        externo.classList.add("oculto");
+        actualizarResumen();
+    });
+
+    tipoRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            const tipo = document.querySelector('input[name="tipoEmpleado"]:checked')?.value;
+            interno.classList.toggle("oculto", tipo !== "Interno");
+            externo.classList.toggle("oculto", tipo !== "Externo");
+        });
+    });
+
+    // Escuchar cambios en los radios de productos
+    productos.forEach(producto => {
+        const radios = producto.querySelectorAll('input[type="radio"]');
+        radios.forEach(radio => {
+            radio.addEventListener('change', actualizarResumen);
+        });
+    });
+
+    function actualizarResumen() {
+        let total = 0;
+        let resumen = '<h4>Productos Seleccionados:</h4>';
+        let tieneProductos = false;
+
+        productos.forEach(p => {
+            const nombre = p.dataset.nombre;
+            const precio = parseInt(p.dataset.precios);
+            const radios = p.querySelectorAll('input[type="radio"]');
+            const cantidad = parseInt([...radios].find(r => r.checked)?.value || 0);
+            if (cantidad > 0) {
+                const subtotal = precio * cantidad;
+                resumen += `<p>${nombre} x ${cantidad} = $${subtotal.toLocaleString()} MXN</p>`;
+                total += subtotal;
+                tieneProductos = true;
+            }
+        });
+
+        if (!tieneProductos) {
+            resumen = 'No hay productos seleccionados';
         }
 
-        document.getElementById("btnEnviar").addEventListener("click", () => {
-            const tipoChecked = document.querySelector('input[name="tipoEmpleado"]:checked');
-            if (!tipoChecked) {
-                alert("Por favor selecciona si eres Empleado Interno o Externo.");
-                return;
-            }
+        listaResumen.innerHTML = resumen;
+        totalResumen.textContent = `$${total.toLocaleString()} MXN`;
+    }
 
-            const tipo = tipoChecked.value;
-            let valid = true;
-            let errores = [];
+    document.getElementById("btnEnviar").addEventListener("click", () => {
+        const tipoChecked = document.querySelector('input[name="tipoEmpleado"]:checked');
+        if (!tipoChecked) {
+            alert("Por favor selecciona si eres Empleado Interno o Externo.");
+            return;
+        }
 
-            const campos = tipo === "Interno" ?
-                ["nomina", "nombreInterno", "celularInterno", "correoInterno"] :
-                ["nombreExterno", "celularExterno", "correoExterno"];
+        const tipo = tipoChecked.value;
+        let valid = true;
+        let errores = [];
 
-            campos.forEach(id => {
-                const campo = document.getElementById(id);
-                campo.classList.remove("error");
+        const campos = tipo === "Interno" ?
+            ["nomina", "nombreInterno", "celularInterno", "correoInterno"] :
+            ["nombreExterno", "celularExterno", "correoExterno"];
 
-                if (!campo.value.trim()) {
-                    campo.classList.add("error");
-                    valid = false;
-                    errores.push(`El campo ${id.replace(/([A-Z])/g, ' $1').toLowerCase()} es obligatorio.`);
-                }
+        campos.forEach(id => {
+            const campo = document.getElementById(id);
+            campo.classList.remove("error");
 
-                if (id.includes("celular") && !/^\d{10}$/.test(campo.value)) {
-                    campo.classList.add("error");
-                    valid = false;
-                    errores.push("El número de celular debe tener exactamente 10 dígitos numéricos.");
-                }
-
-                if (id.includes("correo") && !/^[^@\s]+@[^@\s]+\.com$/.test(campo.value)) {
-                    campo.classList.add("error");
-                    valid = false;
-                    errores.push("El correo debe tener un formato válido (ejemplo: usuario@dominio.com).");
-                }
-            });
-
-            // Verificar si se seleccionó al menos un producto
-            let tieneProductos = false;
-            productos.forEach(p => {
-                const radios = p.querySelectorAll('input[type="radio"]');
-                const cantidad = parseInt([...radios].find(r => r.checked)?.value || 0);
-                if (cantidad > 0) {
-                    tieneProductos = true;
-                }
-            });
-
-            if (!tieneProductos) {
+            if (!campo.value.trim()) {
+                campo.classList.add("error");
                 valid = false;
-                errores.push("Debes seleccionar al menos un producto (mínimo 1 caja).");
+                errores.push(`El campo ${id.replace(/([A-Z])/g, ' $1').toLowerCase()} es obligatorio.`);
             }
 
-            if (!valid) {
-                alert("Por favor corrige los campos resaltados.\n" + errores.join("\n"));
-                console.log("Valores de campos:", campos.reduce((obj, id) => ({ ...obj, [id]: document.getElementById(id).value }), {}));
-                return;
+            if (id.includes("celular") && !/^\d{10}$/.test(campo.value)) {
+                campo.classList.add("error");
+                valid = false;
+                errores.push("El número de celular debe tener exactamente 10 dígitos numéricos.");
             }
 
-            // Armar texto del resumen para el modal
-            let info = `<p><strong>Tipo:</strong> ${tipo}</p>`;
-            if (tipo === "Interno") {
-                info += `<p><strong>Nombre:</strong> ${document.getElementById("nombreInterno").value}</p>`;
-                info += `<p><strong>Celular:</strong> ${document.getElementById("celularInterno").value}</p>`;
-                info += `<p><strong>Correo:</strong> ${document.getElementById("correoInterno").value}</p>`;
-            } else {
-                info += `<p><strong>Nombre:</strong> ${document.getElementById("nombreExterno").value}</p>`;
-                info += `<p><strong>Celular:</strong> ${document.getElementById("celularExterno").value}</p>`;
-                info += `<p><strong>Correo:</strong> ${document.getElementById("correoExterno").value}</p>`;
+            if (id.includes("correo") && !/^[^@\s]+@[^@\s]+\.com$/.test(campo.value)) {
+                campo.classList.add("error");
+                valid = false;
+                errores.push("El correo debe tener un formato válido (ejemplo: usuario@dominio.com).");
             }
-
-            info += `<h4>Productos Seleccionados:</h4>`;
-            productos.forEach(p => {
-                const nombre = p.dataset.nombre;
-                const precio = parseInt(p.dataset.precio);
-                const radios = p.querySelectorAll('input[type="radio"]');
-                const cantidad = parseInt([...radios].find(r => r.checked)?.value || 0);
-                if (cantidad > 0) {
-                    info += `<p>${nombre} x ${cantidad} = $${(precio * cantidad).toLocaleString()} MXN</p>`;
-                }
-            });
-
-            document.getElementById("detallePedido").innerHTML = info;
-            document.getElementById("modalConfirmacion").style.display = "flex";
         });
 
-        function mostrarAviso() {
-            fetch("docs/aviso.txt")
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("No se pudo cargar el archivo de aviso.");
-                    }
-                    return response.text();
-                })
-                .then(texto => {
-                    document.getElementById("contenidoAviso").textContent = texto;
-                    document.getElementById("modalAviso").style.display = "flex";
-                })
-                .catch(error => {
-                    console.error("Error al cargar el aviso:", error);
-                    document.getElementById("contenidoAviso").textContent = "No se pudo cargar el aviso. Por favor, intenta de nuevo más tarde.";
-                    document.getElementById("modalAviso").style.display = "flex";
-                });
+        // Verificar si se seleccionó al menos un producto
+        let tieneProductos = false;
+        productos.forEach(p => {
+            const radios = p.querySelectorAll('input[type="radio"]');
+            const cantidad = parseInt([...radios].find(r => r.checked)?.value || 0);
+            if (cantidad > 0) {
+                tieneProductos = true;
+            }
+        });
+
+        if (!tieneProductos) {
+            valid = false;
+            errores.push("Debes seleccionar al menos un producto (mínimo 1 caja).");
         }
 
-        function confirmarEnvio() {
-            const tipo = document.querySelector('input[name="tipoEmpleado"]:checked').value;
-            const productosSeleccionados = [];
+        if (!valid) {
+            alert("Por favor corrige los campos resaltados.\n" + errores.join("\n"));
+            console.log("Valores de campos:", campos.reduce((obj, id) => ({ ...obj, [id]: document.getElementById(id).value }), {}));
+            return;
+        }
 
-            productos.forEach(p => {
-                const nombre = p.dataset.nombre;
-                const precio = parseInt(p.dataset.precio);
-                const cantidad = parseInt([...p.querySelectorAll('input[type="radio"]')].find(r => r.checked)?.value || 0);
-                if (cantidad > 0) {
-                    productosSeleccionados.push({
-                        nombre: `${nombre} x ${cantidad}`,
-                        total: precio * cantidad
-                    });
+        // Armar texto del resumen para el modal
+        let info = `<p><strong>Tipo:</strong> ${tipo}</p>`;
+        if (tipo === "Interno") {
+            info += `<p><strong>Nombre:</strong> ${document.getElementById("nombreInterno").value}</p>`;
+            info += `<p><strong>Celular:</strong> ${document.getElementById("celularInterno").value}</p>`;
+            info += `<p><strong>Correo:</strong> ${document.getElementById("correoInterno").value}</p>`;
+        } else {
+            info += `<p><strong>Nombre:</strong> ${document.getElementById("nombreExterno").value}</p>`;
+            info += `<p><strong>Celular:</strong> ${document.getElementById("celularExterno").value}</p>`;
+            info += `<p><strong>Correo:</strong> ${document.getElementById("correoExterno").value}</p>`;
+        }
+
+        info += `<h4>Productos Seleccionados:</h4>`;
+        productos.forEach(p => {
+            const nombre = p.dataset.nombre;
+            const precio = parseInt(p.dataset.precios);
+            const radios = p.querySelectorAll('input[type="radio"]');
+            const cantidad = parseInt([...radios].find(r => r.checked)?.value || 0);
+            if (cantidad > 0) {
+                info += `<p>${nombre} x ${cantidad} = $${(precio * cantidad).toLocaleString()} MXN</p>`;
+            }
+        });
+
+        document.getElementById("detallePedido").innerHTML = info;
+        document.getElementById("modalConfirmacion").style.display = "flex";
+    });
+
+    function mostrarAviso() {
+        fetch("docs/aviso.txt")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("No se pudo cargar el archivo de aviso.");
                 }
-            });
-
-            const totalFinal = productosSeleccionados.reduce((sum, p) => sum + p.total, 0);
-
-            const data = {
-                tipo,
-                nomina: tipo === "Interno" ? document.getElementById("nomina").value : '',
-                nombre: tipo === "Interno" ? document.getElementById("nombreInterno").value : document.getElementById("nombreExterno").value,
-                correo: tipo === "Interno" ? document.getElementById("correoInterno").value : document.getElementById("correoExterno").value,
-                celular: tipo === "Interno" ? document.getElementById("celularInterno").value : document.getElementById("celularExterno").value,
-                productos: productosSeleccionados
-            };
-
-            fetch("https://script.google.com/macros/s/AKfycbzgMKRaneoWHg4OoBaYIEN04p74LPvNLY0lWfrvRTMvHhRBMnu0_NmckAg10xwEsQ9QIA/exec", {
-                method: "POST",
-                body: JSON.stringify(data),
-                headers: {
-                    "Content-Type": "application/json"
-                }
+                return response.text();
             })
-                .then(res => res.json())
-                .then(resp => {
-                    if (resp.status === "OK") {
-                        alert("¡Pedido enviado exitosamente!");
-                        window.location.reload();
-                    } else {
-                        alert("Error al enviar el pedido.");
-                    }
-                })
-                .catch(err => {
-                    console.error("Error al enviar:", err);
-                    alert("Error de red al enviar el pedido.");
+            .then(texto => {
+                document.getElementById("contenidoAviso").textContent = texto;
+                document.getElementById("modalAviso").style.display = "flex";
+            })
+            .catch(error => {
+                console.error("Error al cargar el aviso:", error);
+                document.getElementById("contenidoAviso").textContent = "No se pudo cargar el aviso. Por favor, intenta de nuevo más tarde.";
+                document.getElementById("modalAviso").style.display = "flex";
+            });
+    }
+
+    function confirmarEnvio() {
+        const tipo = document.querySelector('input[name="tipoEmpleado"]:checked').value;
+        const productosSeleccionados = [];
+
+        productos.forEach(p => {
+            const nombre = p.dataset.nombre;
+            const precio = parseInt(p.dataset.precios);
+            const radios = p.querySelectorAll('input[type="radio"]');
+            const cantidad = parseInt([...radios].find(r => r.checked)?.value || 0);
+            if (cantidad > 0) {
+                productosSeleccionados.push({
+                    nombre: `${nombre} x ${cantidad}`,
+                    total: precio * cantidad
                 });
+            }
+        });
 
-            document.getElementById("modalConfirmacion").style.display = "none";
-        }
+        // Rellenar el formulario oculto con los datos
+        document.getElementById('tipoHidden').value = tipo;
+        document.getElementById('nominaHidden').value = tipo === "Interno" ? document.getElementById("nomina").value : '';
+        document.getElementById('nombreHidden').value = tipo === "Interno" ? document.getElementById("nombreInterno").value : document.getElementById("nombreExterno").value;
+        document.getElementById('celularHidden').value = tipo === "Interno" ? document.getElementById("celularInterno").value : document.getElementById("celularExterno").value;
+        document.getElementById('correoHidden').value = tipo === "Interno" ? document.getElementById("correoInterno").value : document.getElementById("correoExterno").value;
+        document.getElementById('productosHidden').value = JSON.stringify(productosSeleccionados);
 
-    </script>
+        // Enviar el formulario
+        document.getElementById('pedidoForm').submit();
+
+        // Ocultar el modal después de enviar
+        document.getElementById("modalConfirmacion").style.display = "none";
+    }
+</script>
 
 </body>
 
