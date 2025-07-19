@@ -549,26 +549,25 @@
             };
 
             fetch("https://script.google.com/macros/s/AKfycbzgMKRaneoWHg4OoBaYIEN04p74LPvNLY0lWfrvRTMvHhRBMnu0_NmckAg10xwEsQ9QIA/exec", {
-                method: "POST",
-                body: JSON.stringify(data),
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-                .then(res => res.json())
-                .then(resp => {
-                    if (resp.status === "OK") {
-                        alert("¡Pedido enviado exitosamente!");
-                        window.location.reload();
-                    } else {
-                        alert("Error al enviar el pedido.");
-                    }
-                })
-                .catch(err => {
-                    console.error("Error al enviar:", err);
-                    alert("Error de red al enviar el pedido.");
-                });
-
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(datos)
+  })
+    .then(res => res.json())
+    .then(response => {
+      if (response.status === "ok") {
+        alert("✅ Pedido enviado correctamente");
+        // Aquí puedes generar PDF o resetear el formulario si gustas
+      } else {
+        alert("❌ Hubo un error al enviar el pedido. Intenta nuevamente.");
+      }
+    })
+    .catch(err => {
+      console.error("Error de red:", err);
+      alert("❌ Error de red al enviar el pedido. Verifica tu conexión.");
+    });
             document.getElementById("modalConfirmacion").style.display = "none";
         }
 
