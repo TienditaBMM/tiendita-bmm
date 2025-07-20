@@ -113,6 +113,26 @@
     text-decoration: underline;
   }
 
+  .modal-bg .modal{
+    background:#fff;
+    padding:24px;
+    border-radius:var(--radio);
+    box-shadow:var(--sombra);
+    max-width:380px;
+    width:90%;
+    text-align:center;
+  }
+
+  .modal-bg{
+    display:none;            /* se vuelve "flex" desde JS */
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.60);
+    justify-content:center;  /* centra horizontal */
+    align-items:center;      /* centra vertical   */
+    z-index:2000;
+  }
+
 </style>
 
 <!-- Firebase SDKs -->
@@ -139,7 +159,7 @@
 </footer>
 
 <!-- MODAL AVISO EXTERNO -->
-<div class="modal" id="modalAviso">
+<div class="modal-bg" id="modalAviso">
   <div class="modal-content">
       <button class="close-modal" onclick="document.getElementById('modalAviso').style.display='none'">✖</button>
       <h3>Aviso de Privacidad</h3>
