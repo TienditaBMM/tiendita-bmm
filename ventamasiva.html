@@ -530,6 +530,7 @@
 
     function confirmarEnvio() {
         const tipo = document.querySelector('input[name="tipoEmpleado"]:checked').value;
+        document.getElementById('tipoHidden').value = tipo; 
         const productosSeleccionados = [];
 
         productos.forEach(p => {
