@@ -62,6 +62,31 @@
   .btn-ok{background:#24a148;color:#fff;margin-right:14px}
   .btn-cancel{background:#d82c0d;color:#fff} 
 
+  /* ——— modal “Aviso de Privacidad” ——— */
+  .close-modal{
+    position:absolute;
+    top:12px;
+    right:12px;
+    background:#f4f5ff;
+    border:none;
+    font-size:22px;
+    line-height:1;
+    width:38px;
+    height:38px;
+    border-radius:var(--radio);
+    font-weight:bold;
+    cursor:pointer;
+  }
+  .close-modal:hover{background:#ebecff}
+  
+  .modal-scroll{
+    max-height:60vh;       /* aparece scroll si es muy largo */
+    overflow-y:auto;
+    margin-top:6px;
+    text-align:left;
+    padding-right:6px;     /* evita que el texto pegue con la barra */
+  }
+
   /* otros */
   #spinner{display:none;text-align:center;margin-top:20px;font-weight:bold;font-size:17px}
   footer{background:var(--azul);color:#fff;text-align:center;padding:18px 10px;font-size:14px}
@@ -291,43 +316,41 @@ function generarHoras(start,end,step){
   return out;
 }
 
-  function mostrarAviso(){
+/* ---------- Aviso de privacidad ---------- */
+function mostrarAviso(){
   fetch("docs/aviso.txt")
-    .then(r => {
+    .then(r=>{
       if(!r.ok) throw new Error("No se pudo cargar el aviso");
       return r.text();
     })
-    .then(txt => {
+    .then(txt=>{
       document.getElementById("avisoTexto").textContent = txt;
-      document.getElementById("modalAviso").style.display = "flex"; // usa flex p/centrar
+      document.getElementById("modalAviso").style.display = "flex";
     })
-    .catch(err => {
-      console.error(err);
+    .catch(_=>{
       document.getElementById("avisoTexto").textContent =
-        "No se pudo cargar el aviso. Por favor, intenta más tarde.";
+        "No se pudo cargar el aviso. Intenta de nuevo más tarde.";
       document.getElementById("modalAviso").style.display = "flex";
     });
-  }
-  
-  function cerrarAviso(){
-    document.getElementById("modalAviso").style.display = "none";
-  }
+}
+
+function cerrarAviso(){
+  document.getElementById("modalAviso").style.display = "none";
+}
 
 </script>
   
-<!-- MODAL AVISO DE PRIVACIDAD -->
-<div class="modal-bg" id="modalAviso" style="display:none;">
-  <div class="modal">
+<!-- MODAL | Aviso de privacidad -->
+<div class="modal-bg" id="modalAviso" style="display:none">
+  <div class="modal" style="max-width:600px">
     <button class="close-modal" onclick="cerrarAviso()">✖</button>
     <h3>Aviso de Privacidad</h3>
 
-    <!-- contenedor con scroll -->
     <div class="modal-scroll">
-      <pre id="avisoTexto"
-           style="white-space:pre-line;font-family:inherit;"></pre>
+      <pre id="avisoTexto" style="white-space:pre-line;font-family:inherit;"></pre>
     </div>
   </div>
 </div>
-
+  
 </body>
 </html>
