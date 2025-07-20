@@ -65,53 +65,6 @@
   /* otros */
   #spinner{display:none;text-align:center;margin-top:20px;font-weight:bold;font-size:17px}
   footer{background:var(--azul);color:#fff;text-align:center;padding:18px 10px;font-size:14px}
-
-  .modal {
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.6);
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .modal-content {
-      background-color: #fff;
-      margin: 20px;
-      padding: 20px;
-      border-radius: var(--radio);
-      max-width: 600px;
-      max-height: 80vh;
-      overflow-y: auto;
-      box-shadow: var(--sombra);
-      position: relative;
-  }
-  
-  .close-modal {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: transparent;
-      border: none;
-      font-size: 20px;
-      font-weight: bold;
-      color: #444;
-      cursor: pointer;
-  }
-  
-  .close-modal:hover {
-      color: red;
-  }
- 
-  footer.aviso a {          
-    color: #fff !important;
-    text-decoration: underline;
-  }
-
 </style>
 
 <!-- Firebase SDKs -->
@@ -133,18 +86,7 @@
   <div id="spinner">⏳ Guardando cita…</div>
 </main>
 
-<footer class="aviso">© 2025 Tiendita BMM | 
-  <a href="javascript:void(0)" onclick="mostrarAviso()">Aviso de Privacidad</a>
-</footer>
-
-<!-- MODAL AVISO EXTERNO -->
-<div class="modal" id="modalAviso">
-  <div class="modal-content">
-      <button class="close-modal" onclick="document.getElementById('modalAviso').style.display='none'">✖</button>
-      <h3>Aviso de Privacidad</h3>
-      <pre id="contenidoAviso" style="white-space: pre-line; font-family: inherit;"></pre>
-    </div>
-</div>
+<footer>© 2025 Tiendita BMM — Uso interno</footer>
 
 <script>
 /* ------------------------------------------------------------------ */
@@ -343,25 +285,6 @@ function generarHoras(start,end,step){
     m+=step; if(m>=60){h++;m-=60;}
   }
   return out;
-}
-
-function mostrarAviso() {
-   fetch("docs/aviso.txt")
-   .then(response => {
-   if (!response.ok) {
-       throw new Error("No se pudo cargar el archivo de aviso.");
-     }
-     return response.text();
-   })
-   .then(texto => {
-   document.getElementById("contenidoAviso").textContent = texto;
-   document.getElementById("modalAviso").style.display = "flex";
-    })
-   .catch(error => {
-   console.error("Error al cargar el aviso:", error);
-   document.getElementById("contenidoAviso").textContent = "No se pudo cargar el aviso. Por favor, intenta de nuevo más tarde.";
-   document.getElementById("modalAviso").style.display = "flex";
-  });
 }
 </script>
 </body>
