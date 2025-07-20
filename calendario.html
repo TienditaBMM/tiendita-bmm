@@ -62,29 +62,34 @@
   .btn-ok{background:#24a148;color:#fff;margin-right:14px}
   .btn-cancel{background:#d82c0d;color:#fff} 
 
-  /* ——— modal “Aviso de Privacidad” ——— */
+  /* cabecera con título + botón */
+  .modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;       
+  }  
+
   .close-modal{
-    position:absolute;
-    top:12px;
-    right:12px;
+    position:static;         
+    width:34px;height:34px;
     background:#f4f5ff;
     border:none;
-    font-size:22px;
-    line-height:1;
-    width:38px;
-    height:38px;
     border-radius:var(--radio);
+    font-size:20px;
     font-weight:bold;
+    line-height:0;
     cursor:pointer;
   }
   .close-modal:hover{background:#ebecff}
+
   
   .modal-scroll{
-    max-height:60vh;       /* aparece scroll si es muy largo */
+    max-height:60vh;       
     overflow-y:auto;
     margin-top:6px;
     text-align:left;
-    padding-right:6px;     /* evita que el texto pegue con la barra */
+    padding-right:6px;     
   }
 
   /* otros */
@@ -342,12 +347,17 @@ function cerrarAviso(){
   
 <!-- MODAL | Aviso de privacidad -->
 <div class="modal-bg" id="modalAviso" style="display:none">
-  <div class="modal" style="max-width:600px">
-    <button class="close-modal" onclick="cerrarAviso()">✖</button>
-    <h3>Aviso de Privacidad</h3>
+  <div class="modal">
+    <!-- cabecera del modal -->
+    <div class="modal-header">
+      <h3>Aviso de Privacidad</h3>
+      <button class="close-modal" onclick="cerrarAviso()">✖</button>
+    </div>
 
+    <!-- cuerpo con scroll -->
     <div class="modal-scroll">
-      <pre id="avisoTexto" style="white-space:pre-line;font-family:inherit;"></pre>
+      <pre id="avisoTexto"
+           style="white-space:pre-line;font-family:inherit;"></pre>
     </div>
   </div>
 </div>
