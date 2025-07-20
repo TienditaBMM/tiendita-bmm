@@ -556,11 +556,16 @@
           .map(p => `${p.nombre} x ${p.cantidad}=${p.total}`)
           .join(',');
 
-        // Enviar el formulario
-        document.getElementById('pedidoForm').submit();
-
-        // Ocultar el modal después de enviar
+        // Crear formulario temporal para enviar y redirigir
+        const form = document.getElementById('pedidoForm');
+        form.target = "dummyFrame"; // Evita que cambie de página
+        form.submit();
+    
+        // Ocultar el modal y redirigir a index.html después de unos segundos
         document.getElementById("modalConfirmacion").style.display = "none";
+        setTimeout(() => {
+            window.location.href = "index.html";
+        }, 2000); // espera 2 segundos antes de redirigir
     }
 </script>
 
