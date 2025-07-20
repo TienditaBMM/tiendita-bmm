@@ -415,11 +415,20 @@
     <footer>
         <div><strong>NIVEA Beiersdorf México, S.A. de C.V.</strong></div>
         <div>Dirección: Av Sta Fe, La Cebada, 01219 Puerto Interior, Gto.</div>
-        <div class="aviso">Este sitio almacena tu información únicamente para fines de control de acceso a Tiendita
-            BMM.<br>No compartimos tus datos con terceros. Consulta el aviso de privacidad completo en tu área de
-            Recursos Humanos.</div>
+        <div class="aviso">
+            <a href="javascript:void(0)" onclick="mostrarAviso()">Aviso de
+            Privacidad</a>
+        </div>
         <div style="margin-top:10px;">© 2025 Tiendita BMM. Todos los derechos reservados.</div>
     </footer>
+     <!-- MODAL AVISO EXTERNO -->
+    <div class="modal" id="modalAviso">
+        <div class="modal-content">
+            <button class="close-modal" onclick="document.getElementById('modalAviso').style.display='none'">✖</button>
+            <h3>Aviso de Privacidad</h3>
+            <pre id="contenidoAviso" style="white-space: pre-line; font-family: inherit;"></pre>
+        </div>
+    </div>
     <script>
         const carousel = document.getElementById('carousel');
         const totalSlides = carousel.children.length;
@@ -482,6 +491,25 @@
             localStorage.setItem('registroTiendita', JSON.stringify(datos));
             window.location.href = 'calendario.html';
         });
+        
+        function mostrarAviso() {
+            fetch("docs/aviso.txt")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("No se pudo cargar el archivo de aviso.");
+                    }
+                    return response.text();
+                })
+                .then(texto => {
+                    document.getElementById("contenidoAviso").textContent = texto;
+                    document.getElementById("modalAviso").style.display = "flex";
+                })
+                .catch(error => {
+                    console.error("Error al cargar el aviso:", error);
+                    document.getElementById("contenidoAviso").textContent = "No se pudo cargar el aviso. Por favor, intenta de nuevo más tarde.";
+                    document.getElementById("modalAviso").style.display = "flex";
+                });
+        }
     </script>
 </body>
 
