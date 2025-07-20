@@ -561,11 +561,14 @@
         form.target = "dummyFrame"; // Evita que cambie de página
         form.submit();
     
-        // Ocultar el modal y redirigir a index.html después de unos segundos
+        // Oculta el modal
         document.getElementById("modalConfirmacion").style.display = "none";
-        setTimeout(() => {
-            window.location.href = "index.html";
-        }, 2000); // espera 2 segundos antes de redirigir
+    
+        // Mensaje de confirmación tipo push
+        alert("✅ Tu pedido se ha guardado exitosamente.");
+    
+        // Redirigir a index.html después de aceptar el mensaje
+        window.location.href = "index.html";
     }
 </script>
 <iframe name="dummyFrame" style="display:none;"></iframe>
