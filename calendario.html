@@ -28,7 +28,7 @@
             line-height: 1.4
         }
 
-        
+
         header {
             background: #fff;
             box-shadow: var(--sombra);
@@ -50,7 +50,7 @@
             font-size: 18px
         }
 
-       
+
         main {
             flex: 1;
             max-width: 900px;
@@ -72,11 +72,11 @@
             font-size: 22px
         }
 
-        
+
         .nav-btn {
             position: absolute;
             top: 44%;
-            
+
             width: 38px;
             height: 38px;
             border: none;
@@ -109,7 +109,7 @@
             right: -55px
         }
 
-        
+
         .calendar {
             position: relative;
             margin: 0 auto;
@@ -166,7 +166,7 @@
             }
         }
 
-        
+
         .slots {
             margin-top: 30px;
             display: grid;
@@ -208,7 +208,7 @@
             }
         }
 
-        
+
         .modal-bg {
             position: fixed;
             inset: 0;
@@ -259,7 +259,7 @@
             color: #fff
         }
 
-       
+
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -291,7 +291,7 @@
             padding-right: 6px
         }
 
-       
+
         #spinner {
             display: none;
             text-align: center;
@@ -319,7 +319,7 @@
         }
     </style>
 
-    
+
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 </head>
@@ -334,7 +334,7 @@
         <h1 id="mes"></h1>
         <h2>Selecciona tu cita</h2>
 
-       
+
         <div style="position:relative;max-width:420px;margin:0 auto">
             <button class="nav-btn nav-prev" id="prevBtn">‹</button>
             <button class="nav-btn nav-next" id="nextBtn">›</button>
@@ -350,7 +350,7 @@
         <a href="javascript:void(0)" onclick="mostrarAviso()">Aviso de Privacidad</a>
     </footer>
 
-    
+
     <div class="modal-bg" id="modalAviso" style="display:none">
         <div class="modal" style="max-width:600px">
             <div class="modal-header">
@@ -364,9 +364,9 @@
     </div>
 
     <script>
-        
-        
-        
+
+
+
         firebase.initializeApp({
             apiKey: "AIzaSyDvHy46iATTlnwpOgWgSib2Tm43SJPkjzY",
             authDomain: "registrotienditabmm.firebaseapp.com",
@@ -374,9 +374,9 @@
         });
         const db = firebase.firestore();
 
-        
-        
-        
+
+
+
         const MAX_CUPOS = 3;
         const EXT_URL = "https://script.google.com/macros/s/AKfycbxWb0PRv7NCFlDnoBt6ys5hEbxXKVBxJa0iMN5wP8PEOwLJQopgadQRcgyu_Yd0n38t/exec";
 
@@ -388,17 +388,17 @@
             prevBtn = $("prevBtn"),
             nextBtn = $("nextBtn");
 
-        let monthOffset = 0;          
-        let HORARIOS = {};            
-        let FESTIVOS = [];            
-        let reservas = {};            
+        let monthOffset = 0;
+        let HORARIOS = {};
+        let FESTIVOS = [];
+        let reservas = {};
         let selectedCell = null;
 
-        
+
         const user = JSON.parse(localStorage.getItem("registroTiendita") || "null");
         if (!user || !user.nombre) { alert("Debes registrarte primero"); location.href = "index.html"; }
 
-        
+
         const cleanHour = h => (h || "").toString().match(/\d{2}:\d{2}/)?.[0] || "";
         const generarHoras = (start, end, step = 10) => {
             const out = []; let [h, m] = start.split(":").map(Number); const [eh, em] = end.split(":").map(Number);
@@ -409,15 +409,15 @@
             return out;
         };
 
-       
-        
-       
+
+
+
         (async () => {
             /* horarios */
             const hSnap = await db.doc("config/horarios").get();
             HORARIOS = hSnap.exists ? hSnap.data() : {};
 
-           
+
             const fSnap = await db.doc("config/festivos").get();
             FESTIVOS = fSnap.exists ? fSnap.data().fechas || [] : [];
 
@@ -426,12 +426,12 @@
             drawCalendar();
         })();
 
-        
+
         const FALLBACK = generarHoras("13:00", "16:50", 10);
         function slotsForWeekday(wd) {
-            if (wd >= 2 && wd <= 4) return (HORARIOS.marJue || []).map(cleanHour); 
-            if (wd === 5) return (HORARIOS.viernes || []).map(cleanHour); 
-            return [];                                            
+            if (wd >= 2 && wd <= 4) return (HORARIOS.marJue || []).map(cleanHour);
+            if (wd === 5) return (HORARIOS.viernes || []).map(cleanHour);
+            return [];
         }
 
         async function refrescarReservas() {
@@ -444,9 +444,9 @@
             });
         }
 
-        
-        
-       
+
+
+
         prevBtn.onclick = () => { if (monthOffset > 0) { monthOffset--; drawCalendar(); } };
         nextBtn.onclick = () => { if (monthOffset < 1) { monthOffset++; drawCalendar(); } };
 
@@ -457,11 +457,11 @@
                 th.className = "day-header"; th.textContent = d; cal.appendChild(th);
             });
 
-            
+
             prevBtn.disabled = monthOffset === 0;
             nextBtn.disabled = monthOffset === 1;
 
-            
+
             const base = new Date();
             base.setMonth(base.getMonth() + monthOffset, 1);
 
@@ -477,7 +477,7 @@
             for (let d = 1; d <= daysInM; d++) {
                 const dt = new Date(y, m, d);
                 const iso = dt.toISOString().split("T")[0];
-                const wd = dt.getDay();               
+                const wd = dt.getDay();
 
                 const cell = document.createElement("div");
                 cell.className = "day";
@@ -506,15 +506,15 @@
                 cal.appendChild(cell);
             }
 
-            
+
             slot.innerHTML = "";
         }
         const disabledCell = () => { const d = document.createElement("div"); d.className = "day disabled"; return d; };
         function selectCell(c) { if (selectedCell) selectedCell.classList.remove("selected"); selectedCell = c; c.classList.add("selected"); }
 
-        
-        
-        
+
+
+
         function showSlots(iso, wd) {
             slot.innerHTML = "";
             const occ = reservas[iso] || {};
@@ -534,9 +534,9 @@
             });
         }
 
-        
-        
-        
+
+
+
         function confirmar(fecha, hora) {
             const bg = document.createElement("div"); bg.className = "modal-bg";
             bg.innerHTML = `
@@ -567,7 +567,7 @@
                     tx.set(ref, { correos: lista }, { merge: true });
                 });
 
-                
+
                 fetch(EXT_URL, {
                     method: 'POST', mode: 'no-cors',
                     body: new URLSearchParams({
@@ -591,9 +591,9 @@
             }
         }
 
-        
-        
-        
+
+
+
         function mostrarAviso() {
             fetch("docs/aviso.txt")
                 .then(r => { if (!r.ok) throw 0; return r.text(); })
