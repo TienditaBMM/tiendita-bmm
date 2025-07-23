@@ -583,7 +583,8 @@
 
                 alert("✅ Cita registrada con éxito");
                 await refrescarReservas();
-                drawCalendar();
+                drawCalendar(); slot.innerHTML="";
+                setTimeout(()=>location.href="index.html",900);
             } catch (err) {
                 alert("❌ " + err.message);
             } finally {
