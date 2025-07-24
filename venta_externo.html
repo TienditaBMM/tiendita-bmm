@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Venta Masiva</title>
+    <style>
+        :root {
+            --azul: #0d1c84;
+            --gris: #f4f6fb;
+            --sombra: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --radio: 8px;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            background: var(--gris);
+        }
+
+        header {
+            background-color: var(--azul);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        header img {
+            height: 30px;
+        }
+
+        .contenido {
+            padding: 20px;
+        }
+
+        .formulario,
+        #catalogoProductos,
+        #resumenPedido {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radio);
+            box-shadow: var(--sombra);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--azul);
+        }
+
+        h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin: 8px 0 4px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 12px;
+            border-radius: var(--radio);
+            border: 1px solid #ccc;
+        }
+
+        .producto {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: var(--radio);
+            padding: 15px;
+        }
+
+        .producto img {
+            max-width: 200px;
+            border-radius: var(--radio);
+        }
+
+        .producto-info {
+            flex: 1;
+        }
+
+        .precio {
+            font-weight: bold;
+            color: var(--azul);
+            margin: 8px 0;
+        }
+
+        .radios label {
+            margin-right: 10px;
+        }
+
+        #btnEnviar {
+            padding: 10px 20px;
+            background: var(--azul);
+            color: white;
+            border: none;
+            border-radius: var(--radio);
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        footer.pie {
+            background-color: var(--azul);
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .error {
+            border: 2px solid red !important;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radio);
+            max-width: 400px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+        }
+
+        .modal-content button {
+            margin: 10px 5px 0 0;
+            padding: 8px 16px;
+            border-radius: var(--radio);
+            border: none;
+            cursor: pointer;
+        }
+
+        .cancelar {
+            background: gray;
+            color: white;
+        }
+
+        .confirmar {
+            background: green;
+            color: white;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 600px) {
+            .producto {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .producto img {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="img/logoBeiersdorf.png" alt="Beiersdorf" />
+        <h1>Venta Masiva Agosto 2025</h1>
+    </header>
+    <main class="contenido">
+        <section class="formulario">
+            <h2>Información del Cliente</h2>
+            <input type="text" placeholder="Nombre Completo *" id="nombre" />
+            <input type="tel" placeholder="Número Celular *" id="celular" maxlength="10" />
+            <input type="email" placeholder="Correo Electrónico *" id="correo" />
+        </section>
+        <section id="catalogoProductos">
+            <h2>Catálogo de Productos</h2>
+            <div class="producto" data-nombre="Labello Labial" data-precio="1056">
+                <img src="img/labello_1.jpg" alt="Labial" />
+                <div class="producto-info">
+                    <strong>LABELLO Bálsamo labial con color Fresa (4.8g)</strong><br>
+                    <span>CAJA CON 32 PIEZAS</span>
+                    <p class="precio">$1,056 MXN</p>
+                    <div class="radios">
+                        <label><input type="radio" name="producto1" value="0" checked /> 0 cajas</label>
+                        <label><input type="radio" name="producto1" value="1" /> 1 caja</label>
+                        <label><input type="radio" name="producto1" value="2" /> 2 cajas</label>
+                        <label><input type="radio" name="producto1" value="3" /> 3 cajas</label>
+                    </div>
+                </div>
+            </div>
+            <div class="producto" data-nombre="NIVEA Crema Corporal" data-precio="660">
+                <img src="img/crema_corporal_1.jpg" alt="Crema Corporal" />
+                <div class="producto-info">
+                    <strong>NIVEA Crema Corporal Humectante Regeneración Intensiva (400 ml)</strong><br>
+                    <span>CAJA CON 12 PIEZAS</span>
+                    <p class="precio">$660 MXN</p>
+                    <div class="radios">
+                        <label><input type="radio" name="producto2" value="0" checked /> 0 cajas</label>
+                        <label><input type="radio" name="producto2" value="1" /> 1 caja</label>
+                        <label><input type="radio" name="producto2" value="2" /> 2 cajas</label>
+                        <label><input type="radio" name="producto2" value="3" /> 3 cajas</label>
+                    </div>
+                </div>
+            </div>
+            <div class="producto" data-nombre="NIVEA Crema Facial" data-precio="4500">
+                <img src="img/crema_facial_1.jpg" alt="Crema Facial" />
+                <div class="producto-info">
+                    <strong>NIVEA Gel Facial Refrescante Cuidado Facial (200 ml)</strong><br>
+                    <span>CAJA CON 12 PIEZAS</span>
+                    <p class="precio">$4,500 MXN</p>
+                    <div class="radios">
+                        <label><input type="radio" name="producto3" value="0" checked /> 0 cajas</label>
+                        <label><input type="radio" name="producto3" value="1" /> 1 caja</label>
+                        <label><input type="radio" name="producto3" value="2" /> 2 cajas</label>
+                        <label><input type="radio" name="producto3" value="3" /> 3 cajas</label>
+                    </div>
+                </div>
+            </div>
+            <div class="producto" data-nombre="NIVEA MEN Desodorante" data-precio="1500">
+                <img src="img/nivea_men_desodorante_1.jpg" alt="MEN Desodorante" />
+                <div class="producto-info">
+                    <strong>NIVEA MEN Desodorante Antimanchas, Black & White Invisible Power (50 ml)</strong><br>
+                    <span>CAJA CON 12 PIEZAS</span>
+                    <p class="precio">$1,500 MXN</p>
+                    <div class="radios">
+                        <label><input type="radio" name="producto4" value="0" checked /> 0 cajas</label>
+                        <label><input type="radio" name="producto4" value="1" /> 1 caja</label>
+                        <label><input type="radio" name="producto4" value="2" /> 2 cajas</label>
+                        <label><input type="radio" name="producto4" value="3" /> 3 cajas</label>
+                    </div>
+                </div>
+            </div>
+            <div class="producto" data-nombre="NIVEA Crema Tarro" data-precio="250">
+                <img src="img/crema_tarro_1.jpg" alt="NIVEA Crema Tarro" />
+                <div class="producto-info">
+                    <strong>NIVEA Creme Tarro (500ml)</strong><br>
+                    <span>CAJA CON 12 PIEZAS</span>
+                    <p class="precio">$250 MXN</p>
+                    <div class="radios">
+                        <label><input type="radio" name="producto5" value="0" checked /> 0 cajas</label>
+                        <label><input type="radio" name="producto5" value="1" /> 1 caja</label>
+                        <label><input type="radio" name="producto5" value="2" /> 2 cajas</label>
+                        <label><input type="radio" name="producto5" value="3" /> 3 cajas</label>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="resumenPedido">
+            <h2>Resumen del Pedido</h2>
+            <div id="listaResumen">No hay productos seleccionados</div>
+            <p><strong>Total:</strong> <span id="totalResumen">$0.00</span></p>
+            <button id="btnEnviar">Enviar Pedido</button>
+        </section>
+    </main>
+    <footer class="pie">
+        © 2025 Tiendita BMM – Venta Masiva | <a href="javascript:void(0)" onclick="mostrarAviso()">Aviso de
+            Privacidad</a>
+    </footer>
+    <div class="modal" id="modalAviso">
+        <div class="modal-content">
+            <button class="close-modal" onclick="document.getElementById('modalAviso').style.display='none'">✖</button>
+            <h3>Aviso de Privacidad</h3>
+            <pre id="contenidoAviso" style="white-space: pre-line; font-family: inherit;"></pre>
+        </div>
+    </div>
+    <div class="modal" id="modalConfirmacion">
+        <div class="modal-content">
+            <h3>Confirmar Pedido</h3>
+            <div id="detallePedido"></div>
+            <button class="cancelar"
+                onclick="document.getElementById('modalConfirmacion').style.display='none'">Cancelar</button>
+            <button class="confirmar" onclick="confirmarEnvio()">Confirmar Pedido</button>
+        </div>
+    </div>
+    <script>
+        const EXT_URL = "https://script.google.com/macros/s/AKfycbzgMKRaneoWHg4OoBaYIEN04p74LPvNLY0lWfrvRTMvHhRBMnu0_NmckAg10xwEsQ9QIA/exec";
+        const productos = document.querySelectorAll('.producto');
+        const listaResumen = document.getElementById('listaResumen');
+        const totalResumen = document.getElementById('totalResumen');
+        const celular = document.getElementById('celular');
+        celular.addEventListener('input', function (e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value.length > 10) {
+                this.value = this.value.slice(0, 10);
+            }
+        });
+        window.addEventListener('DOMContentLoaded', () => {
+            actualizarResumen();
+        });
+        productos.forEach(producto => {
+            const radios = producto.querySelectorAll('input[type="radio"]');
+            radios.forEach(radio => {
+                radio.addEventListener('change', actualizarResumen);
+            });
+        });
+        function actualizarResumen() {
+            let total = 0;
+            let resumen = '<h4>Productos Seleccionados:</h4>';
+            let tieneProductos = false;
+            productos.forEach(p => {
+                const nombre = p.dataset.nombre;
+                const precio = parseInt(p.dataset.precio);
+                const radios = p.querySelectorAll('input[type="radio"]');
+                const cantidad = parseInt([...radios].find(r => r.checked)?.value || 0);
+                if (cantidad > 0) {
+                    const subtotal = precio * cantidad;
+                    resumen += `<p>${nombre} x ${cantidad} = $${subtotal.toLocaleString()} MXN</p>`;
+                    total += subtotal;
+                    tieneProductos = true;
+                }
+            });
+            if (!tieneProductos) {
+                resumen = 'No hay productos seleccionados';
+            }
+            listaResumen.innerHTML = resumen;
+            totalResumen.textContent = `$${total.toLocaleString()} MXN`;
+        }
+        document.getElementById("btnEnviar").addEventListener("click", () => {
+            let valid = true;
+            let errores = [];
+            const campos = ["nombre", "celular", "correo"];
+            campos.forEach(id => {
+                const campo = document.getElementById(id);
+                campo.classList.remove("error");
+                if (!campo.value.trim()) {
+                    campo.classList.add("error");
+                    valid = false;
+                    errores.push(`El campo ${id.replace(/([A-Z])/g, ' $1').toLowerCase()} es obligatorio.`);
+                }
+                if (id === "celular" && !/^\d{10}$/.test(campo.value)) {
+                    campo.classList.add("error");
+                    valid = false;
+                    errores.push("El número de celular debe tener exactamente 10 dígitos numéricos.");
+                }
+                if (id === "correo" && !/^[^@\s]+@[^@\s]+\.com$/.test(campo.value)) {
+                    campo.classList.add("error");
+                    valid = false;
+                    errores.push("El correo debe tener un formato válido (ejemplo: usuario@dominio.com).");
+                }
+            });
+            let tieneProductos = false;
+            productos.forEach(p => {
+                const radios = p.querySelectorAll('input[type="radio"]');
+                const cantidad = parseInt([...radios].find(r => r.checked)?.value || 0);
+                if (cantidad > 0) {
+                    tieneProductos = true;
+                }
+            });
+            if (!tieneProductos) {
+                valid = false;
+                errores.push("Debes seleccionar al menos un producto (mínimo 1 caja).");
+            }
+            if (!valid) {
+                alert("Por favor corrige los campos resaltados.\n" + errores.join("\n"));
+                console.log("Valores de campos:", campos.reduce((obj, id) => ({ ...obj, [id]: document.getElementById(id).value }), {}));
+                return;
+            }
+            let info = `<p><strong>Nombre:</strong> ${document.getElementById("nombre").value}</p>`;
+            info += `<p><strong>Celular:</strong> ${document.getElementById("celular").value}</p>`;
+            info += `<p><strong>Correo:</strong> ${document.getElementById("correo").value}</p>`;
+            info += `<h4>Productos Seleccionados:</h4>`;
+            productos.forEach(p => {
+                const nombre = p.dataset.nombre;
+                const precio = parseInt(p.dataset.precio);
+                const radios = p.querySelectorAll('input[type="radio"]');
+                const cantidad = parseInt([...radios].find(r => r.checked)?.value || 0);
+                if (cantidad > 0) {
+                    info += `<p>${nombre} x ${cantidad} = $${(precio * cantidad).toLocaleString()} MXN</p>`;
+                }
+            });
+            document.getElementById("detallePedido").innerHTML = info;
+            document.getElementById("modalConfirmacion").style.display = "flex";
+        });
+        function mostrarAviso() {
+            fetch("docs/aviso.txt")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("No se pudo cargar el archivo de aviso.");
+                    }
+                    return response.text();
+                })
+                .then(texto => {
+                    document.getElementById("contenidoAviso").textContent = texto;
+                    document.getElementById("modalAviso").style.display = "flex";
+                })
+                .catch(error => {
+                    console.error("Error al cargar el aviso:", error);
+                    document.getElementById("contenidoAviso").textContent = "No se pudo cargar el aviso. Por favor, intenta de nuevo más tarde.";
+                    document.getElementById("modalAviso").style.display = "flex";
+                });
+        }
+        function confirmarEnvio() {
+            const productosSeleccionados = [];
+            productos.forEach(p => {
+                const nombre = p.dataset.nombre;
+                const precio = parseInt(p.dataset.precio);
+                const radios = p.querySelectorAll('input[type="radio"]');
+                const cantidad = parseInt([...radios].find(r => r.checked)?.value || 0);
+                if (cantidad > 0) {
+                    productosSeleccionados.push({
+                        nombre,
+                        cantidad,
+                        total: precio * cantidad
+                    });
+                }
+            });
+            const productosStr = productosSeleccionados
+                .map(p => `${p.nombre} x ${p.cantidad}=${p.total}`)
+                .join(',');
+            fetch(EXT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: new URLSearchParams({
+                    tipo: 'Externo',
+                    Nombre: document.getElementById("nombre").value,
+                    Correo: document.getElementById("correo").value,
+                    Celular: document.getElementById("celular").value,
+                    Productos: productosStr
+                })
+            });
+            document.getElementById("modalConfirmacion").style.display = "none";
+            alert("✅ Tu pedido se ha guardado exitosamente.");
+            setTimeout(() => window.location.href = "index.html", 900);
+        }
+    </script>
+</body>
+
+</html>
