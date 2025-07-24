@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Reserva – Tiendita BMM</title>
-    
+
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="img/icon-192.png" type="image/png">
     <link rel="apple-touch-icon" href="img/icon-512.png" sizes="512x512">
@@ -76,17 +76,21 @@
             font-size: 22px
         }
 
+        .cal-head {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 35px;
+            margin-bottom: 6px;
+        }
 
         .nav-btn {
-            position: absolute;
-            top: 44%;
-
             width: 38px;
             height: 38px;
             border: none;
             border-radius: var(--radio);
-            background: #d9dafa;
-            color: #333;
+            background: #0d1c84;
+            color: #fff;
             font-size: 20px;
             font-weight: 700;
             cursor: pointer;
@@ -94,6 +98,10 @@
             align-items: center;
             justify-content: center;
             transition: filter .15s;
+        }
+
+        .cal-head .nav-btn {
+            transform: translateY(32px);
         }
 
         .nav-btn:hover {
@@ -104,15 +112,6 @@
             opacity: .35;
             cursor: not-allowed
         }
-
-        .nav-prev {
-            left: -55px
-        }
-
-        .nav-next {
-            right: -55px
-        }
-
 
         .calendar {
             position: relative;
@@ -335,13 +334,16 @@
     </header>
 
     <main>
-        <h1 id="mes"></h1>
+
+        <div class="cal-head">
+            <button id="prevBtn" class="nav-btn">‹</button>
+            <h1 id="mes"></h1>
+            <button id="nextBtn" class="nav-btn">›</button>
+        </div>
+
         <h2>Selecciona tu cita</h2>
 
-
-        <div style="position:relative;max-width:420px;margin:0 auto">
-            <button class="nav-btn nav-prev" id="prevBtn">‹</button>
-            <button class="nav-btn nav-next" id="nextBtn">›</button>
+        <div style="max-width:420px;margin:0 auto">
             <div id="calendar" class="calendar"></div>
         </div>
 
@@ -417,7 +419,7 @@
 
 
         (async () => {
-            /* horarios */
+
             const hSnap = await db.doc("config/horarios").get();
             HORARIOS = hSnap.exists ? hSnap.data() : {};
 
@@ -587,8 +589,8 @@
 
                 alert("✅ Cita registrada con éxito");
                 await refrescarReservas();
-                drawCalendar(); slot.innerHTML="";
-                setTimeout(()=>location.href="index.html",900);
+                drawCalendar(); slot.innerHTML = "";
+                setTimeout(() => location.href = "index.html", 500);
             } catch (err) {
                 alert("❌ " + err.message);
             } finally {
