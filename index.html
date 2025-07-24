@@ -5,11 +5,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mi Tiendita</title>
-    
+
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="img/icon-192.png" type="image/png">
     <link rel="apple-touch-icon" href="img/icon-512.png" sizes="512x512">
-    
+
     <style>
         :root {
             --azul: #0d1c84;
@@ -56,7 +56,7 @@
         }
 
         .logo-container img {
-            height: 22px
+            height: 25px
         }
 
         .logo-container span {
@@ -78,53 +78,61 @@
         }
 
         .carousel-container {
-            margin: 90px auto 40px;
-            width: 100%;
-            max-width: 900px;
-            border-radius: var(--radio);
-            overflow: hidden;
-            background: var(--gris-claro);
+            width: 100vw;
+            margin: 90px 0 40px;
             position: relative;
+            overflow: hidden;
         }
 
         .carousel {
             display: flex;
-            transition: transform .10s ease-in-out
+            transition: transform .6s ease;
         }
 
         .carousel img {
+            flex: 0 0 100%;
             width: 100%;
-            max-height: 300px;
+            height: 15vw;
+            min-height: 120px;
             object-fit: contain;
-            padding: 40px;
-            background: var(--gris-claro);
+        }
+
+        @media(max-width:600px) {
+            .carousel img {
+                height: 30vw;
+            }
         }
 
         .carousel-button {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 28px;
-            background: rgba(0, 0, 0, .25);
-            color: #fff;
+            width: 44px;
+            height: 44px;
             border: none;
-            padding: 6px 12px;
-            border-radius: 50%;
+            border-radius: 22px;
+            background: #ffffff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+            color: var(--azul);
+            font-size: 26px;
+            font-weight: 700;
             cursor: pointer;
-            z-index: 1;
-            transition: var(--trans);
+            opacity: .9;
+            transition: opacity .2s, transform .2s;
+            z-index: 3;
         }
 
         .carousel-button:hover {
-            background: rgba(0, 0, 0, .45)
+            opacity: 1;
+            transform: translateY(-50%) scale(1.08);
         }
 
         .carousel-button.left {
-            left: 10px
+            left: 14px;
         }
 
         .carousel-button.right {
-            right: 10px
+            right: 14px;
         }
 
         .brands-section {
@@ -140,15 +148,15 @@
 
         .brands {
             display: grid;
-            grid-template-columns: repeat(7, 1fr); 
+            grid-template-columns: repeat(7, 1fr);
             gap: 12px;
             max-width: 100%;
             margin: 0 auto;
         }
-        
+
         @media(max-width: 768px) {
             .brands {
-             grid-template-columns: repeat(2, 1fr); 
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
@@ -194,23 +202,23 @@
             margin-bottom: 10px;
         }
 
-       .registro-icon {
-        width: 100px; 
-        height: 100px;
-        margin: 0 auto 20px;
-        background: var(--azul);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden; 
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        .registro-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background: var(--azul);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         .registro-icon img {
-        width: 100%;
-        height: auto;
-        object-fit: contain;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
         }
 
         .form-container {
@@ -321,52 +329,93 @@
         }
 
         .modal {
-        display: none;
-        position: fixed;
-        z-index: 2000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0,0,0,0.6);
-        justify-content: center;
-        align-items: center;
-    }
-    
-    .modal-content {
-        background-color: #fff;
-        margin: 20px;
-        padding: 20px;
-        border-radius: var(--radio);
-        max-width: 600px;
-        max-height: 80vh;
-        overflow-y: auto;
-        box-shadow: var(--sombra);
-        position: relative;
-    }
-    
-    .close-modal {
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        background: transparent;
-        border: none;
-        font-size: 20px;
-        font-weight: bold;
-        color: #444;
-        cursor: pointer;
-    }
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
 
-    .close-modal:hover {
-        color: red;
-    }
+        .modal-content {
+            background-color: #fff;
+            margin: 20px;
+            padding: 20px;
+            border-radius: var(--radio);
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--sombra);
+            position: relative;
+        }
 
-    footer .aviso a {
-    color: #fff !important;
-    text-decoration: underline;
-    }
-        
+        .close-modal {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            font-weight: bold;
+            color: #444;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            color: red;
+        }
+
+        footer .aviso a {
+            color: #fff !important;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+
+            .carousel-button {
+                width: 32px;
+                height: 32px;
+                border-radius: 16px;
+                font-size: 18px;
+                box-shadow: 0 1px 4px rgba(0, 0, 0, .25);
+            }
+
+            .brands-section h2 {
+                font-size: 20px;
+                margin-bottom: 18px;
+            }
+
+            .brands {
+                grid-template-columns: repeat(2, minmax(110px, 1fr));
+                gap: 4px;
+            }
+
+            .brand-card {
+                padding: 8px 4px;
+                border-radius: 6px;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+            }
+
+            .brand-card img {
+                height: 40px;
+                margin-bottom: 4px;
+            }
+
+            .brand-card h3 {
+                font-size: 12px;
+                margin-bottom: 0px;
+            }
+
+            .brand-card p {
+                font-size: 11px;
+                line-height: 1.3;
+            }
+        }
     </style>
 
 </head>
@@ -380,48 +429,43 @@
         <a href="venta_externo.html" class="nav-link">Venta Masiva</a>
     </header>
     <div class="carousel-container">
-        <button class="carousel-button left" onclick="prevImage()">‹</button>
+        <button class="carousel-button left" aria-label="Anterior" onclick="prevImage()">‹</button>
+
         <div class="carousel" id="carousel">
-            <img src="img/imagen10.jpg" alt="Imagen 1">
-            <img src="img/imagen11.jpg" alt="Imagen 2">
-            <img src="img/imagen7.jpg" alt="Imagen 3">
-            <img src="img/imagen5.jpg" alt="Imagen 4">
-            <img src="img/imagen6.jpg" alt="Imagen 5">
+            <img src="img/banner_1.jpg" alt="Slide 1">
+            <img src="img/banner_2.jpg" alt="Slide 2">
+            <img src="img/banner_3.png" alt="Slide 3">
+            <img src="img/banner_4.jpg" alt="Slide 4">
+            <img src="img/banner_5.jpg" alt="Slide 5">
         </div>
-        <button class="carousel-button right" onclick="nextImage()">›</button>
+
+        <button class="carousel-button right" aria-label="Siguiente" onclick="nextImage()">›</button>
     </div>
+
     <section class="brands-section">
         <h2>Nuestras Marcas</h2>
         <div class="brands">
-            <div class="brand-card"><img src="https://upload.wikimedia.org/wikipedia/commons/d/d3/NIVEA_logo_2021.svg"
-                alt="NIVEA">
+            <div class="brand-card"><img src="img/nivea-logo.png" alt="NIVEA">
                 <h3>NIVEA</h3>
                 <p>Cuidado esencial</p>
             </div>
-            <div class="brand-card"><img src="https://live.staticflickr.com/65535/40896760423_260cb85883_z.jpg"
-                alt="Eucerin">
+            <div class="brand-card"><img src="img/eucerin-logo.png" alt="Eucerin">
                 <h3>EUCERIN</h3>
                 <p>Dermatología avanzada</p>
             </div>
-            <div class="brand-card"><img src="https://1000marcas.net/wp-content/uploads/2021/05/Logo-Labello.jpg"
-                alt="Labello">
+            <div class="brand-card"><img src="img/labello-logo.png" alt="Labello">
                 <h3>LABELLO</h3>
                 <p>Cuidado de labios</p>
             </div>
-            <div class="brand-card"><img
-                src="https://logowik.com/content/uploads/images/aquaphor-healing-ointment3299.logowik.com.webp"
-                alt="Aquaphor">
+            <div class="brand-card"><img src="img/aquaphor-logo.png" alt="Aquaphor">
                 <h3>AQUAPHOR</h3>
                 <p>Reparación intensiva</p>
             </div>
-            <div class="brand-card"><img
-                src="https://images.seeklogo.com/logo-png/33/1/coppertone-logo-png_seeklogo-337384.png"
-                alt="Coppertone">
+            <div class="brand-card"><img src="img/coppertone-logo.png" alt="Coppertone">
                 <h3>COPPERTONE</h3>
                 <p>Protección solar avanzada</p>
             </div>
-            <div class="brand-card"><img src="img/marca_atrix.png"
-                alt="Atrix">
+            <div class="brand-card"><img src="img/marca_atrix.png" alt="Atrix">
                 <h3>ATRIX</h3>
                 <p>Protección para tus manos</p>
             </div>
@@ -471,11 +515,11 @@
         <div>Dirección: Av Sta Fe, La Cebada, 01219 Puerto Interior, Gto.</div>
         <div class="aviso">
             <a href="javascript:void(0)" onclick="mostrarAviso()">Aviso de
-            Privacidad</a>
+                Privacidad</a>
         </div>
         <div style="margin-top:10px;">© 2025 Tiendita BMM. Todos los derechos reservados.</div>
     </footer>
-     <!-- MODAL AVISO EXTERNO -->
+    
     <div class="modal" id="modalAviso">
         <div class="modal-content">
             <button class="close-modal" onclick="document.getElementById('modalAviso').style.display='none'">✖</button>
@@ -487,7 +531,9 @@
         const carousel = document.getElementById('carousel');
         const totalSlides = carousel.children.length;
         let index = 0;
-        const updateCarousel = () => { carousel.style.transform = `translateX(-${index * 100}%)`; };
+        const updateCarousel = () => {
+            carousel.style.transform = `translateX(-${index * window.innerWidth}px)`;
+        };
         const nextImage = () => { index = (index + 1) % totalSlides; updateCarousel(); };
         const prevImage = () => { index = (index - 1 + totalSlides) % totalSlides; updateCarousel(); };
         setInterval(nextImage, 6000);
@@ -545,7 +591,7 @@
             localStorage.setItem('registroTiendita', JSON.stringify(datos));
             window.location.href = 'calendario.html';
         });
-        
+
         function mostrarAviso() {
             fetch("docs/aviso.txt")
                 .then(response => {
@@ -566,11 +612,11 @@
         }
     </script>
     <script>
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("sw.js")
-        .then(() => console.log("✅ Service Worker registrado"))
-        .catch(err => console.error("❌ Error al registrar SW", err));
-      }
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("sw.js")
+                .then(() => console.log("✅ Service Worker registrado"))
+                .catch(err => console.error("❌ Error al registrar SW", err));
+        }
     </script>
 
 </body>
