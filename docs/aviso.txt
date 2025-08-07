@@ -1,9 +1,2 @@
-Este sitio web, desarrollado para uso interno de Beiersdorf, recopila los datos proporcionados por los empleados para el control de pedidos masivos.
-
-La información recolectada incluye nombre, correo electrónico, número celular y datos de nómina (para empleados internos). Esta información será almacenada de manera segura y utilizada únicamente para fines de registro, validación y seguimiento de pedidos en el sistema de Tiendita BMM.
-
-No se compartirá esta información con terceros y estará protegida conforme a los lineamientos establecidos por la Ley Federal de Protección de Datos Personales en Posesión de los Particulares.
-
-Al continuar con el envío del formulario, usted acepta los términos aquí expuestos.
-
-Para más información, contacte al área de Sistemas o Recursos Humanos.
+Beiersdorf Manufacturing México, S.A. de C.V. (en lo sucesivo, “Beiersdorf” y/o la “Compañía “), con domicilio en Calle Circuito San Roque Norte y Poniente No. 210, Parque Industrial Santa Fe, C.P. 36275, Silao de la Victoria, Guanajuato, es el responsable del uso y protección de sus datos personales. Beiersdorf hace de su conocimiento que los datos personales que recabemos de usted serán utilizados con la finalidad de cumplir con nuestras obligaciones obrero-patronales contenidas en el contrato individual de trabajo y las legislaciones aplicables vigentes; el otorgamiento de prestaciones y beneficios que ofrece la Compañía a sus empleados; así como otros fines administrativos de la Compañía.
+Podrá consultar el Aviso de Privacidad Integral en el Departamento de Recursos Humanos de la compañía.
