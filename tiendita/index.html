@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Tiendita</title>
+
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/img/icon-192.png" type="image/png">
+    <link rel="apple-touch-icon" href="/img/icon-512.png" sizes="512x512">
+
+    <style>
+        :root {
+            --azul: #0d1c84;
+            --fondo-form: #f5f6ff;
+            --gris-claro: #eef0ff;
+            --sombra: 0 2px 8px rgba(0, 0, 0, .12);
+            --radio: 12px;
+            --trans: .3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #fff;
+            color: #1e1e1e;
+            line-height: 1.4;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #0d1c84;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 15px 25px;
+            box-shadow: var(--sombra);
+            z-index: 1000;
+            flex-wrap: wrap;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .logo-container img {
+            height: 25px
+        }
+
+        .logo-container span {
+            font-weight: 600;
+            font-size: 18px;
+            white-space: nowrap
+        }
+
+        .nav-link {
+            font-weight: 600;
+            font-size: 20px;
+            color: #fff;
+            text-decoration: none;
+            transition: var(--trans);
+        }
+
+        .nav-link:hover {
+            opacity: .7
+        }
+
+        .carousel-container {
+            width: 100vw;
+            margin: 90px 0 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carousel {
+            display: flex;
+            transition: transform .6s ease;
+        }
+
+        .carousel img {
+            flex: 0 0 100%;
+            width: 100%;
+            height: 15vw;
+            min-height: 120px;
+            object-fit: contain;
+        }
+
+        @media(max-width:600px) {
+            .carousel img {
+                height: 30vw;
+            }
+        }
+
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 22px;
+            background: #ffffff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+            color: var(--azul);
+            font-size: 26px;
+            font-weight: 700;
+            cursor: pointer;
+            opacity: .9;
+            transition: opacity .2s, transform .2s;
+            z-index: 3;
+        }
+
+        .carousel-button:hover {
+            opacity: 1;
+            transform: translateY(-50%) scale(1.08);
+        }
+
+        .carousel-button.left {
+            left: 14px;
+        }
+
+        .carousel-button.right {
+            right: 14px;
+        }
+
+        .brands-section {
+            padding: 0 20px 60px;
+            text-align: center
+        }
+
+        .brands-section h2 {
+            color: var(--azul);
+            font-size: 25px;
+            margin-bottom: 25px;
+        }
+
+        .brands {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        @media(max-width: 768px) {
+            .brands {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .brand-item img {
+            width: 100%;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 12px;
+        }
+
+        .brand-item h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--azul)
+        }
+
+        .brand-item p {
+            font-size: 14px;
+            color: #555
+        }
+
+        .registro-section {
+            text-align: center;
+            padding: 20px
+        }
+
+        .registro-section h2 {
+            color: var(--azul);
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        .registro-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background: var(--azul);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .registro-icon img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .form-container {
+            background: var(--fondo-form);
+            padding: 30px 25px;
+            margin: 0 auto 80px;
+            max-width: 420px;
+            font-weight: 600;
+            border-radius: var(--radio);
+            box-shadow: var(--sombra);
+            text-align: left;
+        }
+
+        .form-container label[for="tipoEmpleado"] {
+            text-align: center;
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .form-container input,
+        .form-container select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .radio-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+
+        .radio-group label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .radio-group input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+        }
+
+        .form-container button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: var(--azul);
+            color: #fff;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--trans);
+        }
+
+        .form-container button:hover {
+            background: #091463
+        }
+
+        footer {
+            background: var(--azul);
+            color: #fff;
+            text-align: center;
+            padding: 25px 10px;
+            font-size: 14px;
+        }
+
+        .aviso {
+            font-size: 14px;
+            margin-top: 10px;
+            color: #ccc;
+        }
+
+        @media(max-width:600px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px 20px
+            }
+
+            .logo-container span {
+                font-size: 16px
+            }
+
+            .nav-link {
+                font-size: 15px
+            }
+
+            .carousel img {
+                padding: 20px;
+                max-height: 200px
+            }
+        }
+
+        @media (max-width: 480px) {
+            .registro-icon {
+                width: 80px;
+                height: 80px;
+            }
+
+            .registro-icon img {
+                width: 90%;
+                height: auto;
+            }
+
+            .registro-section h2 {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                max-width: 92%;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 20px;
+            padding: 20px;
+            border-radius: var(--radio);
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--sombra);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            font-weight: bold;
+            color: #444;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            color: red;
+        }
+
+        footer .aviso a {
+            color: #fff !important;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+
+            .carousel-button {
+                width: 32px;
+                height: 32px;
+                border-radius: 16px;
+                font-size: 18px;
+                box-shadow: 0 1px 4px rgba(0, 0, 0, .25);
+            }
+
+            .brands-section h2 {
+                font-size: 20px;
+                margin-bottom: 18px;
+            }
+
+            .brands {
+                grid-template-columns: repeat(2, minmax(110px, 1fr));
+                gap: 4px;
+            }
+
+            .brand-item img {
+                height: 40px;
+                margin-bottom: 4px;
+            }
+
+            .brand-item h3 {
+                font-size: 12px;
+                margin-bottom: 0px;
+            }
+
+            .brand-item p {
+                font-size: 11px;
+                line-height: 1.3;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="/img/logoBeiersdorf.png" alt="Logo empresa">
+            <span></span>
+        </div>
+        <a href="" class="nav-link">Venta Masiva</a>
+    </header>
+    <div class="carousel-container">
+        <button class="carousel-button left" aria-label="Anterior" onclick="prevImage()">‹</button>
+
+        <div class="carousel" id="carousel">
+            <img src="/img/banner_1.png" alt="Slide 1">
+            <img src="/img/banner_2.png" alt="Slide 2">
+            <img src="/img/banner_3.png" alt="Slide 3">
+            <img src="/img/banner_4.png" alt="Slide 4">
+        </div>
+
+        <button class="carousel-button right" aria-label="Siguiente" onclick="nextImage()">›</button>
+    </div>
+
+    <section class="registro-section">
+        <h2>Registro Mi Tiendita</h2>
+        <div class="registro-icon"><img src="/img/sitelogo.png" alt="Formulario"></div>
+        <div class="form-container">
+            <form id="registroForm">
+                <label for="tipoEmpleado">¿Eres empleado?</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="tipoEmpleado" value="Interno" required> Interno</label>
+                    <label><input type="radio" name="tipoEmpleado" value="Externo"> Externo</label>
+                </div>
+                <div id="formExterno" style="display:none;">
+                    <label for="nombreExterno">Nombre:</label>
+                    <input type="text" id="nombreExterno" name="nombreExterno" required />
+                    <label for="correoExterno">Correo electrónico:</label>
+                    <input type="email" id="correoExterno" name="correoExterno" required />
+                </div>
+                <div id="formInterno" style="display:none;">
+                    <label for="rol">¿Qué rol eres?</label>
+                    <select id="rol" name="rol" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="Operador">Operador</option>
+                        <option value="Administrativo">Administrativo</option>
+                    </select>
+                    <label for="nomina">Nómina:</label>
+                    <input type="text" id="nomina" name="nomina" required min="0" step="1" />
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" required />
+                    <label for="correo">Correo electrónico:</label>
+                    <input type="email" id="correo" name="correo" required />
+                </div>
+                <button type="submit">Continuar</button>
+                <div id="mensaje"></div>
+            </form>
+        </div>
+    </section>
+
+    <section class="brands-section">
+        <h2>Nuestras Marcas</h2>
+        <div class="brands">
+            <div class="brand-item"><img src="/img/nivea-logo.png" alt="NIVEA">
+                <h3>NIVEA</h3>
+                <p>Cuidado esencial</p>
+            </div>
+            <div class="brand-item"><img src="/img/eucerin-logo.png" alt="Eucerin">
+                <h3>EUCERIN</h3>
+                <p>Dermatología avanzada</p>
+            </div>
+            <div class="brand-item"><img src="/img/labello-logo.png" alt="Labello">
+                <h3>LABELLO</h3>
+                <p>Cuidado de labios</p>
+            </div>
+            <div class="brand-item"><img src="/img/aquaphor-logo.png" alt="Aquaphor">
+                <h3>AQUAPHOR</h3>
+                <p>Reparación intensiva</p>
+            </div>
+            <div class="brand-item"><img src="/img/coppertone-logo.png" alt="Coppertone">
+                <h3>COPPERTONE</h3>
+                <p>Protección solar avanzada</p>
+            </div>
+            <div class="brand-item"><img src="/img/marca_atrix.png" alt="Atrix">
+                <h3>ATRIX</h3>
+                <p>Protección para tus manos</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div><strong>NIVEA Beiersdorf México, S.A. de C.V.</strong></div>
+        <div>Dirección: Av Sta Fe, La Cebada, 01219 Puerto Interior, Gto.</div>
+        <div class="aviso">
+            <a href="javascript:void(0)" onclick="mostrarAviso()">Aviso de
+                Privacidad</a>
+        </div>
+        <div style="margin-top:10px;">© 2025 Tiendita BMM. Todos los derechos reservados.</div>
+    </footer>
+
+    <div class="modal" id="modalAviso">
+        <div class="modal-content">
+            <button class="close-modal" onclick="document.getElementById('modalAviso').style.display='none'">✖</button>
+            <h3>Aviso de Privacidad</h3>
+            <pre id="contenidoAviso" style="white-space: pre-line; font-family: inherit;"></pre>
+        </div>
+    </div>
+    <script>
+        const carousel = document.getElementById('carousel');
+        const totalSlides = carousel.children.length;
+        let index = 0;
+        const updateCarousel = () => {
+            carousel.style.transform = `translateX(-${index * window.innerWidth}px)`;
+        };
+        const nextImage = () => { index = (index + 1) % totalSlides; updateCarousel(); };
+        const prevImage = () => { index = (index - 1 + totalSlides) % totalSlides; updateCarousel(); };
+        setInterval(nextImage, 6000);
+        const radioButtons = document.querySelectorAll('input[name="tipoEmpleado"]');
+        const formExterno = document.getElementById('formExterno');
+        const formInterno = document.getElementById('formInterno');
+        radioButtons.forEach(rb =>
+            rb.addEventListener('change', () => {
+                if (rb.value === 'Interno') {
+                    formExterno.style.display = 'none';
+                    formInterno.style.display = 'block';
+                    [...formExterno.querySelectorAll('input')].forEach(el => el.removeAttribute('required'));
+                    [...formInterno.querySelectorAll('input, select')].forEach(el => el.setAttribute('required', ''));
+                } else {
+                    formInterno.style.display = 'none';
+                    formExterno.style.display = 'block';
+                    [...formInterno.querySelectorAll('input, select')].forEach(el => el.removeAttribute('required'));
+                    [...formExterno.querySelectorAll('input')].forEach(el => el.setAttribute('required', ''));
+                }
+            })
+        );
+        document.getElementById('registroForm').addEventListener('submit', e => {
+            if (!e.target.checkValidity()) return;
+            e.preventDefault();
+            const tipo = document.querySelector('input[name="tipoEmpleado"]:checked');
+            if (!tipo) return;
+            let datos = {};
+            if (tipo.value === 'Externo') {
+                const nombre = document.getElementById('nombreExterno').value.trim();
+                const correo = document.getElementById('correoExterno').value.trim();
+                datos = {
+                    empleado: 'Externo',
+                    rol: 'Externo',
+                    nomina: '-',
+                    nombre: nombre,
+                    correo: correo
+                };
+            } else {
+                const rol = document.getElementById('rol').value;
+                const nomina = document.getElementById('nomina').value.trim();
+                if (!/^[0-9]+$/.test(nomina)) {
+                    alert('La nómina solo debe contener números enteros positivos.');
+                    return;
+                }
+                const nombre = document.getElementById('nombre').value.trim();
+                const correo = document.getElementById('correo').value.trim();
+                datos = {
+                    empleado: 'Interno',
+                    rol: rol,
+                    nomina: nomina,
+                    nombre: nombre,
+                    correo: correo
+                };
+            }
+            localStorage.setItem('registroTiendita', JSON.stringify(datos));
+            window.location.href = 'calendario/';
+        });
+
+        function mostrarAviso() {
+            fetch("/docs/aviso.txt")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("No se pudo cargar el archivo de aviso.");
+                    }
+                    return response.text();
+                })
+                .then(texto => {
+                    document.getElementById("contenidoAviso").textContent = texto;
+                    document.getElementById("modalAviso").style.display = "flex";
+                })
+                .catch(error => {
+                    console.error("Error al cargar el aviso:", error);
+                    document.getElementById("contenidoAviso").textContent = "No se pudo cargar el aviso. Por favor, intenta de nuevo más tarde.";
+                    document.getElementById("modalAviso").style.display = "flex";
+                });
+        }
+    </script>
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("sw.js")
+                .then(() => console.log("✅ Service Worker registrado"))
+                .catch(err => console.error("❌ Error al registrar SW", err));
+        }
+    </script>
+
+</body>
+
+</html>
