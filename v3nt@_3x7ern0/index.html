@@ -630,7 +630,7 @@
                     valid = false;
                     errores.push("El número de celular debe tener exactamente 10 dígitos numéricos.");
                 }
-                if (id === "correo" && !/^[^@\s]+@[^@\s]+\.com$/.test(campo.value)) {
+                if (id === "correo" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(campo.value)) {
                     campo.classList.add("error");
                     valid = false;
                     errores.push("El correo debe tener un formato válido (ejemplo: usuario@dominio.com).");
@@ -728,3 +728,4 @@
 
 
 </html>
+
