@@ -590,7 +590,7 @@
                 alert("✅ Cita registrada con éxito");
                 await refrescarReservas();
                 drawCalendar(); slot.innerHTML = "";
-                setTimeout(() => location.href = "/tiendita/", 500);
+                setTimeout(() => location.href = "/tiendita/", 250);
             } catch (err) {
                 alert("❌ " + err.message);
             } finally {
@@ -614,3 +614,4 @@
 
 
 </html>
+
