@@ -402,7 +402,7 @@
 
 
         const user = JSON.parse(localStorage.getItem("registroTiendita") || "null");
-        if (!user || !user.nombre) { alert("Debes registrarte primero"); location.href = "tiendita/"; }
+        if (!user || !user.nombre) { alert("Debes registrarte primero"); location.href = "/tiendita/"; }
 
 
         const cleanHour = h => (h || "").toString().match(/\d{2}:\d{2}/)?.[0] || "";
@@ -590,7 +590,7 @@
                 alert("✅ Cita registrada con éxito");
                 await refrescarReservas();
                 drawCalendar(); slot.innerHTML = "";
-                setTimeout(() => location.href = "index.html", 500);
+                setTimeout(() => location.href = "/tiendita/", 500);
             } catch (err) {
                 alert("❌ " + err.message);
             } finally {
@@ -611,5 +611,6 @@
     </script>
 
 </body>
+
 
 </html>
