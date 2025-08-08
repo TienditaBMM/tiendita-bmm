@@ -1,7 +1,7 @@
 {
   "name": "Tiendita BMM",
   "short_name": "Tiendita",
-  "start_url": "index.html",
+  "start_url": "/tiendita",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#0d1c84",
@@ -18,3 +18,4 @@
     }
   ]
 }
+
