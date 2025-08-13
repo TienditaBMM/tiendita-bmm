@@ -415,7 +415,27 @@
             return out;
         };
 
+        const mondayOfWeek = d => {
+            const n = new Date(d);
+            n.setHours(0, 0, 0, 0);
+            const offset = (n.getDay() + 6) % 7;
+            n.setDate(n.getDate() - offset);
+            return n.getTime();
+        };
 
+        const hasBookingThisWeek = async (isoDate, correo) => {
+
+            const snap = await db.collection("slots")
+                .where("correos", "array-contains", correo)
+                .get();
+
+            const targetWeek = mondayOfWeek(isoDate);
+            for (const d of snap.docs) {
+                const [fechaDoc] = d.id.split("_");
+                if (mondayOfWeek(fechaDoc) === targetWeek) return true;
+            }
+            return false;
+        };
 
 
         (async () => {
@@ -563,6 +583,11 @@
         async function save(fecha, hora) {
             spin.style.display = "block";
             try {
+
+                if (await hasBookingThisWeek(fecha, user.correo)) {
+                    throw new Error("Ya tienes una cita esta semana");
+                }
+
                 const ref = db.doc(`slots/${fecha}_${hora}`);
                 await db.runTransaction(async tx => {
                     const s = await tx.get(ref);
@@ -612,6 +637,4 @@
 
 </body>
 
-
 </html>
-
