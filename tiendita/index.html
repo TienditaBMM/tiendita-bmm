@@ -454,6 +454,9 @@
                     <input type="text" id="nombreExterno" name="nombreExterno" required />
                     <label for="correoExterno">Correo electrónico:</label>
                     <input type="email" id="correoExterno" name="correoExterno" required />
+                    <label for="empresaExterno">¿De qué empresa nos visitas?</label>
+                    <input type="text" id="empresaExterno" name="empresaExterno"
+                        placeholder='Si no aplicas, escribe "No aplica"' required />
                 </div>
                 <div id="formInterno" style="display:none;">
                     <label for="rol">¿Qué rol eres?</label>
@@ -559,12 +562,14 @@
             if (tipo.value === 'Externo') {
                 const nombre = document.getElementById('nombreExterno').value.trim();
                 const correo = document.getElementById('correoExterno').value.trim();
+                const empresa = document.getElementById('empresaExterno').value.trim();
                 datos = {
                     empleado: 'Externo',
                     rol: 'Externo',
                     nomina: '-',
                     nombre: nombre,
-                    correo: correo
+                    correo: correo,
+                    empresa: empresa
                 };
             } else {
                 const rol = document.getElementById('rol').value;
@@ -618,4 +623,3 @@
 
 
 </html>
-
