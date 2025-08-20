@@ -77,46 +77,36 @@
             opacity: .7
         }
 
-        /* ===== Carrusel 100% responsivo ===== */
-        .carousel-container {
-            width: 100%;
-            max-width: 1100px;
-            margin: 90px auto 40px;
-            position: relative;
-            overflow: hidden;
-            aspect-ratio: 16 / 9;
-            /* alto automático según ancho */
-            background: #eef0ff;
-        }
+        /* Reemplaza tu bloque del carrusel por este */
+.carousel-container{
+  width: 100%;
+  max-width: 1100px;         /* ajusta si quieres más/menos ancho máximo */
+  margin: 90px auto 40px;
+  position: relative;
+  overflow: hidden;
+  background: transparent;   /* o #fff */
+  /* ❌ elimina cualquier aspect-ratio aquí */
+}
 
-        @media (max-width: 900px) {
-            .carousel-container {
-                aspect-ratio: 4 / 3;
-            }
-        }
+.carousel{
+  display: flex;
+  height: auto;              /* el alto lo manda la imagen */
+  transition: transform .45s ease;
+  will-change: transform;
+}
 
-        @media (max-width: 600px) {
-            .carousel-container {
-                aspect-ratio: 1 / 1;
-            }
-        }
+.carousel img{
+  flex: 0 0 100%;            /* cada slide ocupa el ancho del contenedor */
+  width: 100%;
+  height: auto;              /* 🔑 clave: respeta el alto natural */
+  display: block;
+  object-fit: contain;       /* usa 'cover' si quieres que llene recortando */
+}
 
-        .carousel {
-            display: flex;
-            height: 100%;
-            /* ocupa todo el alto del contenedor */
-            transition: transform .45s ease;
-            will-change: transform;
-        }
-
-        .carousel img {
-            flex: 0 0 100%;
-            /* cada slide ocupa 100% del viewport del carrusel */
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            /* usa 'cover' si prefieres llenar y recortar */
-        }
+/* (Opcional) en móviles limita el alto si la imagen es muy alta */
+@media (max-width:600px){
+  .carousel img{ max-height: 70vh; }
+}
 
         .carousel-button {
             position: absolute;
@@ -693,5 +683,6 @@
     </script>
 
 </body>
+
 
 </html>
