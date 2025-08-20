@@ -422,7 +422,7 @@
     <header>
         <div class="logo-container">
             <a href="/tiendita/">
-            <img src="/img/logoBeiersdorf.png" alt="Logo empresa">
+                <img src="/img/logoBeiersdorf.png" alt="Logo empresa">
             </a>
             <span></span>
         </div>
@@ -457,8 +457,31 @@
                     <label for="correoExterno">Correo electrónico:</label>
                     <input type="email" id="correoExterno" name="correoExterno" required />
                     <label for="empresaExterno">¿De qué empresa nos visitas?</label>
-                    <input type="text" id="empresaExterno" name="empresaExterno"
-                        placeholder='Si no aplicas, escribe "No aplica"' required />
+                    <select id="empresaExterno" name="empresaExterno" required>
+                        <option value="" disabled selected>Selecciona una opción</option>
+                        <option value="AESA">AESA</option>
+                        <option value="AGENCIA ADUANERA">AGENCIA ADUANERA</option>
+                        <option value="ARLO">ARLO</option>
+                        <option value="BESTBUDIES">BESTBUDIES</option>
+                        <option value="CANITTI">CANITTI</option>
+                        <option value="CONSULMED">CONSULMED</option>
+                        <option value="CIA">CIA</option>
+                        <option value="CSI">CSI</option>
+                        <option value="DOC">DOC</option>
+                        <option value="HYDROCON">HYDROCON</option>
+                        <option value="JAN DISEÑO">JAN DISEÑO</option>
+                        <option value="LAUNDRY LAV">LAUNDRY LAV</option>
+                        <option value="MEDICA EMPRESARIAL">MEDICA EMPRESARIAL</option>
+                        <option value="ORKIN">ORKIN</option>
+                        <option value="PROSEGUR">PROSEGUR</option>
+                        <option value="SERMIB">SERMIB</option>
+                        <option value="UTEP">UTEP</option>
+                        <option value="SECOMI">SECOMI</option>
+                        <option value="STI">STI</option>
+                        <option value="XGRAF">XGRAF</option>
+                        <option value="PQE GROUP">PQE GROUP</option>
+                        <option value="SISC">SISC</option>
+                    </select>
                 </div>
                 <div id="formInterno" style="display:none;">
                     <label for="rol">¿Qué rol eres?</label>
@@ -545,13 +568,13 @@
                 if (rb.value === 'Interno') {
                     formExterno.style.display = 'none';
                     formInterno.style.display = 'block';
-                    [...formExterno.querySelectorAll('input')].forEach(el => el.removeAttribute('required'));
+                    [...formExterno.querySelectorAll('input, select')].forEach(el => el.removeAttribute('required'));
                     [...formInterno.querySelectorAll('input, select')].forEach(el => el.setAttribute('required', ''));
                 } else {
                     formInterno.style.display = 'none';
                     formExterno.style.display = 'block';
                     [...formInterno.querySelectorAll('input, select')].forEach(el => el.removeAttribute('required'));
-                    [...formExterno.querySelectorAll('input')].forEach(el => el.setAttribute('required', ''));
+                    [...formExterno.querySelectorAll('input, select')].forEach(el => el.setAttribute('required', ''));
                 }
             })
         );
@@ -564,7 +587,7 @@
             if (tipo.value === 'Externo') {
                 const nombre = document.getElementById('nombreExterno').value.trim();
                 const correo = document.getElementById('correoExterno').value.trim();
-                const empresa = document.getElementById('empresaExterno').value.trim();
+                const empresa = document.getElementById('empresaExterno').value;
                 datos = {
                     empleado: 'Externo',
                     rol: 'Externo',
@@ -626,5 +649,3 @@
 
 
 </html>
-
-
