@@ -491,7 +491,7 @@
                         <option value="Administrativo">Administrativo</option>
                     </select>
                     <label for="nomina">Nómina:</label>
-                    <input type="text" id="nomina" name="nomina" required min="0" step="1" />
+                    <input type="text" id="nomina" name="nomina" required />
                     <label for="nombre">Nombre:</label>
                     <input type="text" id="nombre" name="nombre" required />
                     <label for="correo">Correo electrónico:</label>
@@ -598,11 +598,7 @@
                 };
             } else {
                 const rol = document.getElementById('rol').value;
-                const nomina = document.getElementById('nomina').value.trim();
-                if (!/^[0-9]+$/.test(nomina)) {
-                    alert('La nómina solo debe contener números enteros positivos.');
-                    return;
-                }
+                const nomina = document.getElementById('nomina').value.trim();                
                 const nombre = document.getElementById('nombre').value.trim();
                 const correo = document.getElementById('correo').value.trim();
                 datos = {
@@ -649,3 +645,4 @@
 
 
 </html>
+
